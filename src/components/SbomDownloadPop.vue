@@ -89,7 +89,7 @@ export default defineComponent({
 
             let sbomType: string[] = this.sbomProtocol.split('-');
             let requestParam = new FormData()
-            requestParam.append('productId', this.productName as string)
+            requestParam.append('productName', this.productName as string)
             requestParam.append('spec', sbomType[0]);
             requestParam.append('specVersion', sbomType[1]);
             requestParam.append('format', this.fileFormat);

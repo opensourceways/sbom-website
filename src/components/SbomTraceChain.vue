@@ -152,7 +152,7 @@ export default defineComponent({
       await formEl.validate((valid, fields) => {
         if (valid) {
           let requestParam = new FormData()
-          requestParam.append('productId', (window as any).SBOM_PRODUCT_NAME)
+          requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME)
           requestParam.append('binaryType', this.conditionForm.binaryType);
           requestParam.append('type', this.conditionForm.type);
           requestParam.append('namespace', this.conditionForm.namespace);
