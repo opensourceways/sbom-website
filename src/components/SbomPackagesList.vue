@@ -99,7 +99,7 @@ export default defineComponent({
       if (!IsSelectArtifact()) return;
 
       let requestParam = new FormData()
-      requestParam.append('productId', (window as any).SBOM_PRODUCT_NAME);
+      requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME);
       requestParam.append('page', String(this.pageNum - 1));
       requestParam.append('size', String(this.pageSize));
 
