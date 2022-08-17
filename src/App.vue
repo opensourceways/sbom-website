@@ -13,18 +13,11 @@
           <router-link to="/sbomTraceChain" class="nav-link">开源软件反向追溯链</router-link>
         </li>
       </div>
-      <!-- <div>
-        <el-tooltip placement="bottom" :disabled="productNameDisabled">
-          <template #content>当前制品： {{ productName }} </template>
-          <el-button type="info" @click="productDrawer = true">选择制品信息</el-button>
-        </el-tooltip>
-        <el-button type="info" :icon="downloadIcon" @click="downloadSbom"></el-button>
-      </div> -->
     </nav>
     <div class="sbom-header sbom-product-name" v-show="$route.name != 'package-details'">
       <el-row :gutter="20">
         <el-col :span="23">
-          <el-page-header :icon="Expand" title="选择制品信息" :content="productName" @back="openProductDrawer" />
+          <el-page-header :icon="Expand" title="选择制品信息" :content="productName" @back="OpenProductDrawer" />
         </el-col>
         <el-col :span="1">
           <sbomDownloadPop :productName="productName" />
@@ -85,7 +78,7 @@ import ResponseData from "@/types/ResponseData";
 import FormItem from '@/components/ProductFormItem';
 import sbomDownloadPop from '@/components/SbomDownloadPop.vue';
 import ProductItemConfig from '@/types/ProductItemConfig';
-import { productDrawer, openProductDrawer, closeProductDrawer } from '@/utils';
+import { productDrawer, OpenProductDrawer, CloseProductDrawer, ParseUriProductName } from '@/utils';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -101,7 +94,6 @@ export default defineComponent({
     }
   },
   data() {
-    let productName = (window as any).SBOM_PRODUCT_NAME ? (window as any).SBOM_PRODUCT_NAME : "";
     return {
       isRouterAlive: true,
       downloadIcon: Download,
@@ -110,10 +102,10 @@ export default defineComponent({
       useRouter: useRouter,
 
       productDrawer: productDrawer,
-      openProductDrawer: openProductDrawer,
+      OpenProductDrawer: OpenProductDrawer,
+      ParseUriProductName: ParseUriProductName,
 
-      productName: productName,
-      productNameDisabled: productName == null || productName == undefined || productName == "",
+      productName: (window as any).SBOM_PRODUCT_NAME ? (window as any).SBOM_PRODUCT_NAME : "" as string,
       productType: "",
 
       productTypeList: [],
@@ -145,9 +137,8 @@ export default defineComponent({
           SbomDataService.queryProduct(this.productType, this.productForm.data)
             .then((response: ResponseData) => {
               this.productName = response.data.name;
-              this.productNameDisabled = false;
               (window as any).SBOM_PRODUCT_NAME = response.data.name;
-              closeProductDrawer();
+              CloseProductDrawer();
               this.reload();
             })
             .catch((e: any) => {
@@ -230,6 +221,7 @@ export default defineComponent({
 
   mounted() {
     this.getProductTypeList();
+    this.productName = this.ParseUriProductName();
   },
 });
 </script>

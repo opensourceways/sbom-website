@@ -28,7 +28,7 @@ export function IsSelectArtifact(): boolean {
             message: '请先选择制品信息',
             type: 'warning',
         })
-        openProductDrawer();
+        OpenProductDrawer();
         return false;
     }
     return true;
@@ -47,11 +47,11 @@ export function NoAssertionFormat(row: any, colum: any, cellValue: string, index
 
 export const productDrawer = ref(false);
 
-export function openProductDrawer(): void {
+export function OpenProductDrawer(): void {
     productDrawer.value = true;
 }
 
-export function closeProductDrawer(): void {
+export function CloseProductDrawer(): void {
     productDrawer.value = false;
 }
 
@@ -79,4 +79,25 @@ function stringIncludeIgnoreCase(targetString: string, searchString: string) {
     }
 
     return targetString.toLowerCase().includes(searchString.toLowerCase());
+}
+
+function parseUriParams(): URLSearchParams {
+    const paramsStr = window.location.hash.split('?');
+    if (!paramsStr || paramsStr.length < 2) {
+        return new URLSearchParams();
+    }
+    return new URLSearchParams(paramsStr[1]);
+}
+
+export function ParseUriProductName(): string {
+    const searchParams: URLSearchParams = parseUriParams()
+    const productName: string = searchParams.get('productName') || '';
+
+    debugger
+    if (productName && !(window as any).SBOM_PRODUCT_NAME) {
+        (window as any).SBOM_PRODUCT_NAME = productName;
+        return productName;
+    } else {
+        return (window as any).SBOM_PRODUCT_NAME;
+    }
 }
