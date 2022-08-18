@@ -93,7 +93,6 @@ export function ParseUriProductName(): string {
     const searchParams: URLSearchParams = parseUriParams()
     const productName: string = searchParams.get('productName') || '';
 
-    debugger
     if (productName && !(window as any).SBOM_PRODUCT_NAME) {
         (window as any).SBOM_PRODUCT_NAME = productName;
         return productName;
