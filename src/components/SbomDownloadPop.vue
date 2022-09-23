@@ -1,31 +1,26 @@
 <template>
-    <div style="display: flex; align-items: center">
-        <el-popover ref="popoverRef" placement="left" trigger="click" :width="300" @before-enter="openEvent">
+    <div>
+        <el-popover ref="popoverRef" popper-class="sbomDownloadPopper" placement="left" trigger="click" @before-enter="openEvent">
             <template #reference>
-                <el-button type="info" :icon="downloadIcon"></el-button>
+                <!-- <el-button type="info" :icon="downloadIcon"></el-button> -->
+                <div class="downloadBtn">
+                    <img src="@/assets/images/download.png" alt="">
+                    下载
+                </div>
             </template>
-
-            <el-row>
-                <el-col :span="24">
-                    <el-select v-model="sbomProtocol" :teleported="false" placeholder="请选择SBOM格式">
-                        <el-option label="SPDX" value="spdx-2.2" />
-                    </el-select>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="24">
-                    <el-select v-model="fileFormat" :teleported="false" placeholder="请选择文件格式">
-                        <el-option label="JSON" value="json" />
-                        <el-option label="Yaml" value="yaml" />
-                        <el-option label="XML" value="xml" />
-                    </el-select>
-                </el-col>
-            </el-row>
-            <el-row class="last-child">
-                <el-col :span="1" :offset="18">
+            <div class="contentBox">
+                <el-select v-model="sbomProtocol" :teleported="false" placeholder="请选择SBOM格式">
+                    <el-option label="SPDX" value="spdx-2.2" />
+                </el-select>
+                <el-select v-model="fileFormat" :teleported="false" placeholder="请选择文件格式">
+                    <el-option label="JSON" value="json" />
+                    <el-option label="Yaml" value="yaml" />
+                    <el-option label="XML" value="xml" />
+                </el-select>
+                <div class="btns"> 
                     <el-button type="primary" @click="downloadSbom">下载</el-button>
-                </el-col>
-            </el-row>
+                </div>
+            </div>
         </el-popover>
     </div>
 </template>
@@ -115,12 +110,65 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.el-row {
-    margin-bottom: 20px;
+<style lang="less" scoped>
+.downloadBtn{
+    width: 71px;
+    height: 35px;
+    background-color: #4A70FF;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+        margin-right: 5px;
+    }
 }
+</style>
+<style lang="less">
+.el-popover.el-popper.sbomDownloadPopper{
+    height: auto;
+    background: #FFFFFF;
+    box-shadow: 0px 5px 16px 0px rgba(140,140,140,0.25);
+    border-radius: 16px;
+    padding: 20px;
+    min-width: 250px;
+    .el-popover__title{
+        padding: 0 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #191A36;
+        margin-bottom: 0px;
+    }
+    .contentBox{
+        .el-select{
+            margin-bottom: 20px;
+            .el-input__inner{
+                height: 36px;
+                &::placeholder {
+                color: #CFD5E3;
+                font-size: 14px;
+                }
+            }
+        }
+        .btns{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .el-button{
+                padding: 12px 29px;
+                background-color: #4A70FF;
+                border-radius: 4px;
+                text-align: center;
+                font-size: 14px;
+                color: #fff;
+            }
+        }
+    }
 
-.last-child {
-    margin-bottom: 0;
+    
 }
 </style>

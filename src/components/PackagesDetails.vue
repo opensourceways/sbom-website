@@ -142,29 +142,29 @@ export default defineComponent({
     queryPackageDetails(packageId: string) {
       SbomDataService.querySbomPackageById(packageId)
         .then((response: ResponseData) => {
-          this.packageDetails = response.data;
+          // this.packageDetails = response.data;
 
-          let detailsTable = new Array(0);
-          detailsTable.push({ "colName": "Name", "colValue": this.packageDetails.name });
-          if (IsOpenEulerBySourceInfo(this.packageDetails)) {
-            detailsTable.push({ "colName": "Version(epoch:version-release)", "colValue": this.packageDetails.version });
-          } else {
-            detailsTable.push({ "colName": "Version", "colValue": this.packageDetails.version });
-          }
-          detailsTable.push({ "colName": "Homepage", "colValue": this.packageDetails.homepage });
-          detailsTable.push({ "colName": "Supplier", "colValue": this.packageDetails.supplier });
-          detailsTable.push({ "colName": "Description", "colValue": this.packageDetails.description });
-          detailsTable.push({ "colName": "Summary", "colValue": this.packageDetails.summary });
-          detailsTable.push({ "colName": "Copyright", "colValue": this.packageDetails.copyright });
-          detailsTable.push({ "colName": "License", "colValue": this.packageDetails.licenseConcluded });
-          detailsTable.push({ "colName": "download location", "colValue": this.packageDetails.downloadLocation });
-          detailsTable.push({ "colName": "来源信息", "colValue": this.packageDetails.sourceInfo });
-          this.detailsTable = detailsTable;
+          // let detailsTable = new Array(0);
+          // detailsTable.push({ "colName": "Name", "colValue": this.packageDetails.name });
+          // if (IsOpenEulerBySourceInfo(this.packageDetails)) {
+          //   detailsTable.push({ "colName": "Version(epoch:version-release)", "colValue": this.packageDetails.version });
+          // } else {
+          //   detailsTable.push({ "colName": "Version", "colValue": this.packageDetails.version });
+          // }
+          // detailsTable.push({ "colName": "Homepage", "colValue": this.packageDetails.homepage });
+          // detailsTable.push({ "colName": "Supplier", "colValue": this.packageDetails.supplier });
+          // detailsTable.push({ "colName": "Description", "colValue": this.packageDetails.description });
+          // detailsTable.push({ "colName": "Summary", "colValue": this.packageDetails.summary });
+          // detailsTable.push({ "colName": "Copyright", "colValue": this.packageDetails.copyright });
+          // detailsTable.push({ "colName": "License", "colValue": this.packageDetails.licenseConcluded });
+          // detailsTable.push({ "colName": "download location", "colValue": this.packageDetails.downloadLocation });
+          // detailsTable.push({ "colName": "来源信息", "colValue": this.packageDetails.sourceInfo });
+          // this.detailsTable = detailsTable;
 
-          let licenseTable = new Array(0);
-          licenseTable.push({ "colName": "licenseDeclared", "colValue": this.packageDetails.licenseDeclared });
-          licenseTable.push({ "colName": "licenseConcluded", "colValue": this.packageDetails.licenseConcluded });
-          this.licenseTable = licenseTable;
+          // let licenseTable = new Array(0);
+          // licenseTable.push({ "colName": "licenseDeclared", "colValue": this.packageDetails.licenseDeclared });
+          // licenseTable.push({ "colName": "licenseConcluded", "colValue": this.packageDetails.licenseConcluded });
+          // this.licenseTable = licenseTable;
         })
         .catch((e: Error) => {
           console.error('query package details failed:', { e });

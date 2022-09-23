@@ -2,6 +2,7 @@ import { ElLoading, ElMessage } from 'element-plus'
 import ResponseData from "@/types/ResponseData";
 import SbomPackage from "@/types/SbomPackage";
 import { ref } from "vue";
+import $store from "@/store/index";
 
 export function ParseFileNameFromHeader(response: ResponseData) {
     const contentDispositionArr = response.headers['content-disposition']?.split('attachment;filename=');
@@ -21,7 +22,8 @@ export function HideLoading() {
 }
 
 export function IsSelectArtifact(): boolean {
-    const productName = (window as any).SBOM_PRODUCT_NAME;
+    // const productName = (window as any).SBOM_PRODUCT_NAME;
+    const productName = $store.state.productName;
     if (productName == null || productName == undefined || productName == "") {
         ElMessage({
             showClose: true,

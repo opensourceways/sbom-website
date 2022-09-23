@@ -9,22 +9,27 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/sbomDashboard",
     name: "sbomDashboard",
-    component: () => import("./components/SbomDashboard.vue"),
+    component: () => import("@/views/SbomDashboard/SbomDashboard.vue"),
   },
   {
     path: "/sbomPackages",
     name: "sbomPackages",
-    component: () => import("./components/SbomPackagesList.vue"),
+    component: () => import("@/views/SbomPackagesList.vue"),
   },
   {
     path: "/sbomTraceChain",
     name: "sbomTraceChain",
-    component: () => import("./components/SbomTraceChain.vue"),
+    component: () => import("@/views/SbomTraceChain.vue"),
   },
+  // {
+  //   path: "/packageDetails/:id",
+  //   name: "package-details",
+  //   component: () => import("@/components/PackagesDetails.vue"),
+  // },
   {
-    path: "/packageDetails/:id",
-    name: "package-details",
-    component: () => import("./components/PackagesDetails.vue"),
+    path: "/sbomPackageDetail/:id",
+    name: "sbomPackageDetail",
+    component: () => import("@/views/SbomPackageDetail/SbomPackageDetail.vue"),
   },
 ];
 

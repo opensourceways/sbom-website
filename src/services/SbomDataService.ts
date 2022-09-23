@@ -44,6 +44,19 @@ class SbomDataService {
     return http.post(`/exportSbom`, data, config);
   }
 
+  queryProductStatistics(productName: string): Promise<any> {
+    return http.get(`/queryProductStatistics/${productName}`);
+  }
+
+  queryProductVulTrend(productName: string, startTimestamp: number, endTimestamp: number): Promise<any> {
+    return http.get(`/queryProductVulTrend/${productName}?startTimestamp=${startTimestamp}&endTimestamp=${endTimestamp}`);
+  }
+  queryPackageVulsById(packageId: string): Promise<any> {
+    return http.get(`/queryPackageStatistics/${packageId}`);
+  }
+  queryPackageVulnerability(packageId: string, page: number, size: number): Promise<any> {
+    return http.get(`/queryPackageVulnerability/${packageId}?page=${page}&size=${size}`);
+  }
 }
 
 export default new SbomDataService();
