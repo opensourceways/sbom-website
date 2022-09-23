@@ -34,7 +34,7 @@ const Select = (form: Record<string, any>, name: string, data: []) => (
         v-model={form.data[name]}
         filterable
         clearable
-        class="m-2">
+        >
 
         {data.map((item: any) => {
             return <ElOption {...setLabelValue(item)} />

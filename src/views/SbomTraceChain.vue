@@ -1,16 +1,18 @@
 <template>
-  <div class="sbom-service">
-    <el-form ref="conditionFormRef" :model="conditionForm" :rules="validateRules" label-width="120px" status-icon>
-      <el-form-item label="依赖类型" prop="binaryType">
-        <el-radio-group v-model="conditionForm.binaryType">
-          <el-radio label="PACKAGE_MANAGER">Package</el-radio>
-          <el-radio label="PROVIDE_MANAGER">Module</el-radio>
-          <el-radio label="EXTERNAL_MANAGER">Dependency</el-radio>
-        </el-radio-group>
-      </el-form-item>
-
-      <el-row :gutter="1">
-        <el-col :span="4">
+  <div class="sbom-container">
+    <div class="sbom-main">
+      <div class="table-top">
+        <div class="table-title">
+          · 反向追溯链
+        </div>
+        <el-form ref="conditionFormRef" class="query-list" :model="conditionForm" :rules="validateRules" label-width="auto" status-icon>
+          <el-form-item label="依赖类型" prop="binaryType">
+            <el-select v-model="conditionForm.binaryType">
+              <el-option label="Package" value="PACKAGE_MANAGER"></el-option>
+              <el-option label="Module" value="PROVIDE_MANAGER"></el-option>
+              <el-option label="Dependency" value="EXTERNAL_MANAGER"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="包管理器类型" prop="type">
             <el-select v-model="conditionForm.type" placeholder="请选择包管理器类型">
               <el-option label="RPM" value="rpm" />
@@ -21,45 +23,73 @@
               <el-option label="Gitlab" value="gitlab" />
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :span="6" v-show="conditionForm.type === 'maven'">
           <el-form-item label="namespace">
             <el-input v-model="conditionForm.namespace" clearable />
           </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="name" prop="name">
             <el-input v-model="conditionForm.name" clearable />
           </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="version">
             <el-input v-model="conditionForm.version" clearable />
           </el-form-item>
-        </el-col>
-      </el-row>
+          <!-- <el-form-item>
+            <el-button type="primary" :icon="Search" @click="retrieveBinary(conditionFormRef)">Search</el-button>
+          </el-form-item> -->
+        </el-form>
+      </div>
+      <div class="sbom-table">
+        <el-table 
+          ref="singleTableRef" 
+          :data="pageData" 
+          stripe
+          highlight-current-row 
+        >
+          <template #empty>
+            <div class="no-data">
+              <img src="@/assets/images/no-data.png" alt="" />
+              <p>暂无相关内容</p>
+            </div>
+          </template>
+          <el-table-column fixed type="index" label="编号" width="70" :index="indexCounter" />
+          <el-table-column fixed property="purl" show-overflow-tooltip label="依赖描述符（PURL）" width="500">
+            <template #default="scope">
+              <span>{{scope.row.purl}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column fixed property="name" show-overflow-tooltip label="关联软件包名称" width="200" >
+            <template #default="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column property="version" label="版本" width="200" />
+          <el-table-column property="description" show-overflow-tooltip label="软件包描述" >
+            <template #default="scope">
+              <span>{{scope.row.description}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" show-overflow-tooltip label="软件包详情" width="120">
+            <template #default="props">
+              <router-link :to="'/sbomPackageDetail/' + props.row.id" target="_blank" class="nav-link">详情</router-link>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="sbom-pagination">
+          <el-pagination 
+            layout="total, sizes, prev, pager, next, jumper" 
+            :page-sizes="[10, 15, 20, 25, 30]"
+            :total="totalElements" 
+            :page-size="pageSize" 
+            v-model:page-size="pageSize" 
+            v-model:currentPage="pageNum"
+            @current-change="handlePageChange" 
+            @size-change="handleSizeChange" 
+          />
+        </div>
+      </div>
+    </div>
 
-      <el-form-item>
-        <el-button type="primary" :icon="Search" @click="retrieveBinary(conditionFormRef)">Search</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-table ref="singleTableRef" :data="pageData" stripe border highlight-current-row max-height="600"
-      style="width: 100%">
-      <el-table-column fixed type="index" width="70" :index="indexCounter" />
-      <el-table-column fixed property="purl" label="依赖描述符（PURL）" width="500" />
-      <el-table-column fixed property="name" label="关联软件包名称" width="200" />
-      <el-table-column property="version" label="版本" width="200" />
-      <el-table-column property="description" label="软件包描述" />
-      <el-table-column fixed="right" label="软件包详情" width="120">
-        <template #default="props">
-          <router-link :to="'/packageDetails/' + props.row.id" target="_blank" class="nav-link">详情</router-link>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination layout="prev, pager, next, jumper, sizes, total" :page-sizes="[10, 15, 20, 25, 30]"
-      :total="totalElements" :page-size="pageSize" v-model:page-size="pageSize" v-model:currentPage="pageNum"
-      @current-change="handlePageChange" @size-change="handleSizeChange" />
+    
+    
   </div>
 </template>
 
@@ -70,9 +100,12 @@ import { Search } from '@element-plus/icons-vue'
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
 import { IsSelectArtifact } from "@/utils"
+import { mapGetters} from 'vuex';
 
 export default defineComponent({
   name: "sbom-packages-list",
+  components: {
+  },
   setup() {
     const conditionFormRef = ref<FormInstance>();
     const validateRules = reactive<FormRules>({
@@ -123,18 +156,22 @@ export default defineComponent({
 
     };
   },
+  computed:{
+    ...mapGetters([
+      'getProductName'
+    ])
+  },
+  watch: {
+    conditionForm: {
+      deep: true,
+      handler: function() {
+        this.retrieveBinary(this.conditionFormRef)
+      }
+    }
+  },
   methods: {
     indexCounter(index: number) {
       return index + (this.pageNum - 1) * this.pageSize + 1;
-    },
-
-    transferChildTable(row: any) {
-      let childTable = []
-      childTable.push({ "colName": "概要", "colValue": row.summary });
-      childTable.push({ "colName": "描述", "colValue": row.description });
-      childTable.push({ "colName": "Homepage", "colValue": row.homepage });
-      childTable.push({ "colName": "来源信息", "colValue": row.sourceInfo });
-      return childTable;
     },
 
     handlePageChange(val: number) {
@@ -147,12 +184,16 @@ export default defineComponent({
 
     async retrieveBinary(formEl: FormInstance | undefined) {
       if (!formEl) return;
-      if (!IsSelectArtifact()) return;
+      if (!IsSelectArtifact()) {
+        this.pageData = []
+        return; 
+      }
 
       await formEl.validate((valid, fields) => {
         if (valid) {
           let requestParam = new FormData()
-          requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME)
+          // requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME);
+          requestParam.append('productName', this.getProductName);
           requestParam.append('binaryType', this.conditionForm.binaryType);
           requestParam.append('type', this.conditionForm.type);
           requestParam.append('namespace', this.conditionForm.namespace);

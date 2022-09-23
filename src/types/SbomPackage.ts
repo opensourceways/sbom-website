@@ -30,4 +30,6 @@ export default interface SbomPackage {
 
   sbom_id: string;
 
+  vulList: {}
+
 }

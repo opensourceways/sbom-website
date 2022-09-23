@@ -1,0 +1,256 @@
+<template>
+  <div class="sbomData-container">
+    <div class="sbomData-part">
+      <div class="part-title">
+        <img src="@/assets/images/titleIcon2.png" alt="">
+        General
+      </div>
+      <div class="content-box">
+        <div class="content">
+          <div class="label">软件包名称:</div><div class="name">{{ sbomData.name }}</div>
+        </div>
+        <div class="content">
+          <div class="label">版本epoch:version-release:</div><div class="name">{{ sbomData.version }}</div>
+        </div>
+        <div class="content">
+          <div class="label">来源信息:</div><div class="name">{{ sbomData.sourceInfo }}</div>
+        </div>
+        <div class="content">
+          <div class="label">License:</div>
+          <template v-if="sbomData.licenseDeclared">
+            <div 
+              class="license" 
+              v-for="(license,index) in sbomData.licenseDeclared.split('and')" 
+              :key="index"
+            >
+              <span class="dot"></span>
+              <span class="txt">{{ license }}</span>
+            </div>
+          </template>
+        </div>
+        <div class="content">
+          <div class="label">漏洞:</div>
+          <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">
+            <div 
+              :class="['vul','vul'+vulIndex]" 
+              v-if="sbomData.vulList && (sbomData.vulList[vul.prop] || sbomData.vulList[vul.prop]===0)"
+              :key="vulIndex"
+            >
+              <span class="txt">{{ vul.label }}</span>
+              <span class="num">{{ sbomData.vulList[vul.prop] }}</span> 
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    <div class="sbomData-part">
+      <div class="part-title">
+        <img src="@/assets/images/titleIcon2.png" alt="">
+        Source  Control
+      </div>
+      <div class="content-box inline">
+        <div class="content">
+          <div class="label">Home Page:</div><div class="name">{{ sbomData.homepage }}</div>
+        </div>
+        <div class="content">
+          <div class="label">Download URl:</div><div class="name">{{ sbomData.downloadLocation }}</div>
+        </div>
+        <div class="content">
+          <div class="label">Supplier:</div><div class="name">{{ sbomData.supplier }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="sbomData-part">
+      <div class="part-title">
+        <img src="@/assets/images/titleIcon2.png" alt="">
+        Dencryption
+      </div>
+      <div class="content-box">
+        {{ sbomData.description }}
+      </div>
+    </div>
+    <div class="sbomData-part">
+      <div class="part-title">
+        <img src="@/assets/images/titleIcon2.png" alt="">
+        Summary
+      </div>
+      <div class="content-box">
+        {{ sbomData.summary }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from "vue";
+
+export default defineComponent({
+  name: "sbom-data",
+  components: {
+    
+  }, 
+  props: {
+    sbomData: {
+      type: Object,
+      default: ()=>{
+        return {}
+      }
+    }
+  },
+  data() {
+    return {
+      vluProps: [
+        { label: '致命', prop: 'criticalVulCount' },
+        { label: '高', prop: 'highVulCount' },
+        { label: '中', prop: 'mediumVulCount' },
+        { label: '低', prop: 'lowVulCount' },
+        { label: '无风险', prop: 'noneVulCount' },
+        { label: '未知', prop: 'unknownVulCount' },
+      ]
+    };
+  },
+  methods: {
+    
+  },
+});
+</script>
+
+<style lang="less" scoped>
+.sbomData-container{
+  padding: 0 20px;
+  .sbomData-part{
+    padding: 20px 0;
+    border-bottom: 2px dashed #D9E0ED;
+    &:last-child{
+      border-bottom: none;
+    }
+    .part-title{
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000000;
+      margin-bottom: 10px;
+      img{
+        margin-right: 10px;
+      }
+    } 
+    .content-box{
+      font-size: 14px;
+      color: #000000;
+      .content{
+        display: flex;
+        margin-top: 10px;
+        align-items: center;
+        .label{
+          color: #666666;
+          margin-right: 10px;
+          min-width: 60px;
+        }
+        .vul{
+          font-size: 14px;
+          margin-right: 10px;
+          height: 24px;
+          line-height: 24px;
+          .txt{
+            color: #fff;
+            display: inline-block;
+            padding: 0 5px 0 10px;
+            border-radius: 11px 0 0 11px;
+            border: 1px solid #BDBFD1;
+            background-color: #BDBFD1;
+          }
+          .num{
+            display: inline-block;
+            padding: 0 10px 0 7px;
+            border-radius: 0px 11px 11px 0px;
+            border: 1px solid #BDBFD1;
+            color: #BDBFD1;       }
+          &.vul0{
+            .txt{
+              background-color: #FF0000;
+              border-color: #FF0000;
+            }
+            .num{
+              color: #FF0000;
+              border-color: #FF0000;
+            }
+          }
+          &.vul1{
+            .txt{
+              background-color: #D54656;
+              border-color: #D54656;
+            }
+            .num{
+              color: #D54656;
+              border-color: #D54656;
+            }
+          }
+          &.vul2{
+            .txt{
+              background-color: #FF9126;
+              border-color: #FF9126;
+            }
+            .num{
+              color: #FF9126;
+              border-color: #FF9126;
+            }
+          }
+          &.vul3{
+            .txt{
+              background-color: #EFCE18;
+              border-color: #EFCE18;
+            }
+            .num{
+              color: #EFCE18;
+              border-color: #EFCE18;
+            }
+          }
+          &.vul4{
+            .txt{
+              background-color: #67D68C;
+              border-color: #67D68C;
+            }
+            .num{
+              color: #67D68C;
+              border-color: #67D68C;
+            }
+          }
+          &.vul5{
+            .txt{
+              background-color: #B5E1FF;
+              border-color: #B5E1FF;
+            }
+            .num{
+              color: #B5E1FF;
+              border-color: #B5E1FF;
+            }
+          }
+        }
+        .license{
+          height: 32px;
+          line-height: 30px;
+          padding: 0 10px;
+          border: 1px solid #E5E5E5;
+          border-radius: 8px;
+          font-size: 14px;
+          color: #000000;
+          margin-right: 10px;
+          .dot{
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #626CD9;
+            border-radius: 50%;
+            margin-right: 5px;
+          }
+        }
+      }
+      &.inline{
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}
+</style>
