@@ -11,7 +11,7 @@
           <div class="buttons">
             <template v-if="license.licenseDeclared">
               <div 
-                class="item" 
+                class="licenseItem" 
                 v-for="(license,index) in license.licenseDeclared.split('and')" 
                 :key="index"
               >
@@ -27,7 +27,7 @@
           <div class="label spe">licenseConcluded:</div>
           <div class="buttons">
             <template v-if="license.licenseConcluded">
-              <div class="item" v-for="(license,index) in license.licenseConcluded.split('and')" :key="index">
+              <div class="licenseItem" v-for="(license,index) in license.licenseConcluded.split('and')" :key="index">
                 <span class="dot"></span>
                 <span class="txt">{{ license }}</span>
               </div>
@@ -122,24 +122,6 @@ export default defineComponent({
         }
         .buttons{
           display: flex;
-          .item{
-            height: 32px;
-            line-height: 30px;
-            padding: 0 10px;
-            border: 1px solid #E5E5E5;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #000000;
-            margin-right: 10px;
-            .dot{
-              display: inline-block;
-              width: 8px;
-              height: 8px;
-              background-color: #626CD9;
-              border-radius: 50%;
-              margin-right: 5px;
-            }
-          }
         }
       }
       &.inline{

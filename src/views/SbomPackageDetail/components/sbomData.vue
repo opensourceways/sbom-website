@@ -32,7 +32,7 @@
           <div class="label">漏洞:</div>
           <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">
             <div 
-              :class="['vul','vul'+vulIndex]" 
+              :class="['vulBtns','vul'+vulIndex]" 
               v-if="sbomData.vulList && (sbomData.vulList[vul.prop] || sbomData.vulList[vul.prop]===0)"
               :key="vulIndex"
             >
@@ -147,86 +147,7 @@ export default defineComponent({
           margin-right: 10px;
           min-width: 60px;
         }
-        .vul{
-          font-size: 14px;
-          margin-right: 10px;
-          height: 24px;
-          line-height: 24px;
-          .txt{
-            color: #fff;
-            display: inline-block;
-            padding: 0 5px 0 10px;
-            border-radius: 11px 0 0 11px;
-            border: 1px solid #BDBFD1;
-            background-color: #BDBFD1;
-          }
-          .num{
-            display: inline-block;
-            padding: 0 10px 0 7px;
-            border-radius: 0px 11px 11px 0px;
-            border: 1px solid #BDBFD1;
-            color: #BDBFD1;       }
-          &.vul0{
-            .txt{
-              background-color: #FF0000;
-              border-color: #FF0000;
-            }
-            .num{
-              color: #FF0000;
-              border-color: #FF0000;
-            }
-          }
-          &.vul1{
-            .txt{
-              background-color: #D54656;
-              border-color: #D54656;
-            }
-            .num{
-              color: #D54656;
-              border-color: #D54656;
-            }
-          }
-          &.vul2{
-            .txt{
-              background-color: #FF9126;
-              border-color: #FF9126;
-            }
-            .num{
-              color: #FF9126;
-              border-color: #FF9126;
-            }
-          }
-          &.vul3{
-            .txt{
-              background-color: #EFCE18;
-              border-color: #EFCE18;
-            }
-            .num{
-              color: #EFCE18;
-              border-color: #EFCE18;
-            }
-          }
-          &.vul4{
-            .txt{
-              background-color: #67D68C;
-              border-color: #67D68C;
-            }
-            .num{
-              color: #67D68C;
-              border-color: #67D68C;
-            }
-          }
-          &.vul5{
-            .txt{
-              background-color: #B5E1FF;
-              border-color: #B5E1FF;
-            }
-            .num{
-              color: #B5E1FF;
-              border-color: #B5E1FF;
-            }
-          }
-        }
+        
         .license{
           height: 32px;
           line-height: 30px;

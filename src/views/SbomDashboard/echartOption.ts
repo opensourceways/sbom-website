@@ -8,6 +8,10 @@ const color: Array<string> = [
   '#B5E1FF',
   '#BDBFD1',
 ]
+const licenseColor: Array<string> = [
+  '#67D68C',
+  '#FF0000'
+]
 const pieColors: Array<string> = [
   '#1330A0',
   '#466BEB',
@@ -26,11 +30,12 @@ function hexToRgba(hex:string, opacity:number){
   }
   return rgbaColor;
 }
-function getRich(){
+export function getRich(index){
+  const colorList = index < 3 ? licenseColor : color
   const richList = {}
-  for(let i = 0; i< color.length;i ++) {
+  for(let i = 0; i< colorList.length;i ++) {
     richList['a' + i] = {
-      backgroundColor: color[i],
+      backgroundColor: colorList[i],
       margin: 20,
       color: '#fff',
       width: 42,
@@ -52,7 +57,7 @@ export function lineAreaStyle(index: number) {
       },
       {
         offset: 1,
-        color: hexToRgba(color[0], 0.1)
+        color: hexToRgba(color[0], 0)
       }
     ],
     false
@@ -77,7 +82,7 @@ const options = {
         }
       },
       axisLabel: {
-        rich: getRich()
+        // rich: getRich()
       },
       data: []
     },
@@ -107,7 +112,8 @@ const options = {
     },
     legend: {
       top: '20%',
-      right: '20%',
+      bottom: '40%',
+      right: '5%',
       orient: 'vertical'
     },
     color: pieColors,

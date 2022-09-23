@@ -13,7 +13,7 @@
 <script>
 import { init } from 'echarts'
 import { defineComponent, markRaw } from "vue";
-import { options, lineAreaStyle } from './echartOption.ts'
+import { options, lineAreaStyle, getRich } from './echartOption.ts'
 
 export default defineComponent({
   name: 'SbomEchart',
@@ -73,6 +73,7 @@ export default defineComponent({
         }]
       }
       options.xAxis.data = xData
+      options.xAxis.axisLabel.rich = getRich(xData.length)
       options.xAxis.axisLabel.formatter = function(params) {
         let index = xData.findIndex(item => item === params)
         return [
@@ -80,6 +81,10 @@ export default defineComponent({
         ].join('\n')
       }
       return options
+    },
+    formatTime(timestamp) {
+      var date = new Date(timestamp);
+      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
     },
     formatLine() {
       let series = []
@@ -98,8 +103,8 @@ export default defineComponent({
             series.push({
               name: key,
               type: 'line',
-              stack: 'Total',
-              symbolSize: 0,
+              symbol: 'circle',
+              symbolSize: 8,
               areaStyle: {
                 normal: {
                   color: lineAreaStyle(index)
@@ -116,17 +121,39 @@ export default defineComponent({
         series
       }
       options.legend.data = lengendData
-      options.xAxis.data = xData
+      options.xAxis.data = xData.map(date => this.formatTime(date))
       console.log(options)
       return options
     },
+    formatDataList(data) {
+      const keys = Object.keys(data)
+      if(keys && keys.length < 11) {
+        return data
+      } else {
+        let arr = keys.sort((a,b) => {
+          return data[b] - data[a]
+        })
+        let newObj = {}
+        let total = 0
+        arr.map((item,itemIndex) => {
+          if(itemIndex < 10) {
+            newObj[item] = data[item]
+          } else {
+            total += data[item]
+          }
+        })
+        newObj['其他'] = total
+        return newObj
+      }
+    },
     formatPie() {
-      const lengendData = Object.keys(this.dataList)
+      const dataList = this.formatDataList(this.dataList)
+      const lengendData = Object.keys(dataList)
       const data = []
       lengendData.length && lengendData.map(key => {
         data.push({
           name: key,
-          value: this.dataList[key]
+          value: dataList[key]
         })
       })
       const seriesItem = this.option.seriesItem
