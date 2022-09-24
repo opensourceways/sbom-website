@@ -15,8 +15,8 @@
               v-model="packageName" 
               placeholder="输入package名称搜索" 
               :prefix-icon="Search"
-              @keyup.enter="retrievePackages" 
-              @blur="retrievePackages"
+              @keyup.enter="search" 
+              @blur="search"
             />
           </div>
         </div>
@@ -24,8 +24,8 @@
       <div class="sbom-table">
         <el-table 
           ref="singleTableRef" 
-          :data="pageData" 
-          stripe 
+          :data="pageData"  
+          border
           highlight-current-row 
         >
           <template #empty>
@@ -35,13 +35,47 @@
             </div>
           </template>
           <el-table-column fixed type="index" label="编号" width="70" :index="indexCounter" />
-          <el-table-column fixed property="name" label="软件包名称" width="300" />
-          <el-table-column property="version" label="版本(epoch:version-release)" width="300"
+          <el-table-column fixed property="name" label="软件包名称" width="250" show-overflow-tooltip>
+            <template #default="scope">
+              <img class="imgIcon" src="@/assets/images/package.png" alt="">
+              <span>{{ scope.row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column property="version" label="版本(epoch:version-release)" width="200"
+            show-overflow-tooltip
             v-if="IsOpenEulerByProductName()" />
-          <el-table-column property="version" label="版本" width="300" v-else />
-          <el-table-column property="licenseConcluded" label="License" :formatter="NoAssertionFormat" />
-          <el-table-column property="copyright" label="Copyright" :formatter="NoAssertionFormat" />
-          <el-table-column property="supplier" label="Supplier" width="300" :formatter="NoAssertionFormat" />
+          <el-table-column property="version" label="版本" width="200" v-else />
+          <el-table-column property="licenseConcluded" label="漏洞风险数值" min-width="200">
+            <template #default="scope">
+              <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">
+                <div 
+                  :class="['vulBtns','vul'+vulIndex]" 
+                  v-if="scope.row.statistics && (scope.row.statistics[vul.prop] || scope.row.statistics[vul.prop]===0)"
+                  :key="vulIndex"
+                >
+                  <span class="txt">{{ vul.label }}</span>
+                  <span class="num">{{ scope.row.statistics[vul.prop] }}</span> 
+                </div>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column property="licenseConcluded" label="License" :formatter="NoAssertionFormat">
+            <template #default="scope">
+              <template v-if="scope.row.licenseConcluded">
+                <div 
+                  class="licenseItem" 
+                  v-for="(license,index) in scope.row.licenseConcluded.split('and')" 
+                  :key="index"
+                >
+                  <span class="dot"></span>
+                  <span class="txt">{{ license }}</span>
+                </div>
+              </template>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column property="copyright" label="Copyright" min-width="50" :formatter="NoAssertionFormat" />
+          <el-table-column property="supplier" label="Supplier" show-overflow-tooltip :formatter="NoAssertionFormat" />
           <el-table-column fixed="right" width="100" label="操作">
             <template #default="props">
               <router-link :to="'/sbomPackageDetail/' + props.row.id" target="_blank" class="nav-link">详情</router-link>
@@ -87,6 +121,14 @@ export default defineComponent({
       pageSize: ref(10),
       totalElements: ref(0),
       Search: Search,
+      vluProps: [
+        { label: '致命', prop: 'criticalVulCount' },
+        { label: '高', prop: 'highVulCount' },
+        { label: '中', prop: 'mediumVulCount' },
+        { label: '低', prop: 'lowVulCount' },
+        { label: '无风险', prop: 'noneVulCount' },
+        { label: '未知', prop: 'unknownVulCount' },
+      ]
 
     };
   },
@@ -110,7 +152,11 @@ export default defineComponent({
     },
 
     handleSizeChange(val: number) {
-      this.retrievePackages();
+      this.search()
+    },
+    search() {
+      this.pageNum = 1
+      this.retrievePackages();  
     },
 
     retrievePackages() {
@@ -136,6 +182,7 @@ export default defineComponent({
           this.totalElements = response.data.totalElements;
         })
         .catch((e: Error) => {
+          this.totalElements = 0
           console.error('query sbom packages pageable failed:', { e });
         });
     },

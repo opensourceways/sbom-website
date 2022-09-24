@@ -165,8 +165,11 @@ export default defineComponent({
     conditionForm: {
       deep: true,
       handler: function() {
-        this.retrieveBinary(this.conditionFormRef)
+        this.search()
       }
+    },
+    getProductName() {
+      this.retrieveBinary(this.conditionFormRef)
     }
   },
   methods: {
@@ -179,7 +182,12 @@ export default defineComponent({
     },
 
     handleSizeChange(val: number) {
-      this.retrieveBinary(this.conditionFormRef);
+      this.search();
+    },
+    
+    search() {
+      this.pageNum = 1
+      this.retrieveBinary(this.conditionFormRef)
     },
 
     async retrieveBinary(formEl: FormInstance | undefined) {
@@ -208,6 +216,7 @@ export default defineComponent({
               this.totalElements = response.data.totalElements;
             })
             .catch((e: Error) => {
+              this.totalElements = 0
               console.error('query sbom packages by binary failed:', { e });
             });
         }

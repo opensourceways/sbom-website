@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="header">
+    <div class="header" v-if="isHide">
       <router-link to="/" class="">
         <img src="@/assets/images/logo.png" alt="">
       </router-link>
@@ -20,7 +20,7 @@
        <!-- <el-button class="loginBtn">登录</el-button> -->
       </div>
     </div>
-    <template v-if="isShow">
+    <template v-if="isHide">
       <ProductInformation />
     </template>
     <div>
@@ -53,7 +53,7 @@ export default defineComponent({
         { label: '开源软件反向追溯链', path: '/sbomTraceChain', value: 'sbomTraceChain' },
       ],
       activeName: sessionStorage.getItem('activeName') || 'sbomPackages',
-      isShow: true
+      isHide: false
     }
   },
   methods: {
@@ -70,7 +70,7 @@ export default defineComponent({
     $route: {
       deep: true,
       handler(route) {
-        this.isShow = !route.path.includes('sbomPackageDetail')
+        this.isHide = !route.path.includes('sbomPackageDetail')
       }
     }
   },

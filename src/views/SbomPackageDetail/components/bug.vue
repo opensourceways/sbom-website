@@ -79,12 +79,13 @@ export default defineComponent({
     },
     queryPackageVulnerability() {
       const packageId: string = this.$route.params.id.toString()
-      SbomDataService.queryPackageVulnerability(packageId, this.pagination.pageNum, this.pagination.pageSize)
+      SbomDataService.queryPackageVulnerability(packageId, this.pagination.pageNum - 1, this.pagination.pageSize)
         .then((response: ResponseData) => {
           this.tableData = response.data.content;
           this.pagination.total = response.data.totalElements;
         })
         .catch((e: Error) => {
+          this.pagination.total = 0
           console.error('query package details failed:', { e });
         });
     },

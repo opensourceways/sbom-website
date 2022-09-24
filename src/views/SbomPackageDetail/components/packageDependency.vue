@@ -240,6 +240,7 @@ const transferPurl: any = (list: any) => {
     .el-table{
       .el-table__body-wrapper{
         max-height: calc(100vh - 555px);
+        min-height: 200px;
         height: auto;
         overflow: auto;
       }
