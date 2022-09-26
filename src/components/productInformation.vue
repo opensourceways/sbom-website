@@ -3,7 +3,7 @@
     <div class="sbom-header">
       <div class="title-text" @click="showQuery = !showQuery">
         <img src="@/assets/images/titleIcon.png" alt="">
-        制品信息： <span>{{ getProductName }}</span>
+        制品信息 <span v-if="getProductName">{{ getProductName }}</span>
       </div>
       <div class="download-btn">
         <sbomDownloadPop :productName="getProductName" />
@@ -246,7 +246,11 @@ export default defineComponent({
         margin-right: 5px;
       }
       span{
+        border-left: 1px solid #CFD5E3;
+        padding-left: 15px;
+        margin-left: 15px;
         font-weight: normal;
+        font-size: 14px;
       }
     }
   }
