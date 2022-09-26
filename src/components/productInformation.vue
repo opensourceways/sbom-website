@@ -1,15 +1,15 @@
 <template>
   <div class="productInformation-container">
     <div class="sbom-header">
-      <div class="title-text">
+      <div class="title-text" @click="showQuery = !showQuery">
         <img src="@/assets/images/titleIcon.png" alt="">
-        制品信息
+        制品信息 <span v-if="getProductName">{{ getProductName }}</span>
       </div>
       <div class="download-btn">
         <sbomDownloadPop :productName="getProductName" />
       </div>
     </div>
-    <div class="orgnization">
+    <div class="orgnization" v-if="showQuery">
       <div class="label">开源社区：</div>
       <div class="orgnization-btns">
         <div 
@@ -31,7 +31,7 @@
         </el-icon> -->
       </div>
     </div>
-    <div class="query-list">
+    <div class="query-list" v-if="showQuery">
       <el-form ref="productFormRef" label-position="left" :model="productForm.data" :rules="productForm.rules" label-width="auto">
         <el-form-item 
           v-for="(item, key) in productConfigList"
@@ -44,7 +44,7 @@
         </el-form-item>
       </el-form>
       <div class="query-btns" v-if="productConfigList && productConfigList.length">
-        <el-button type="primary" @click="queryArtifactInfo(productFormRef)">搜索</el-button>
+        <el-button type="primary" @click="queryArtifactInfo(productFormRef)">确定</el-button>
         <el-button type="info" @click="reset">重置</el-button>
       </div>
     </div>
@@ -98,6 +98,7 @@ export default defineComponent({
         data: {},
         rules: {},
       }),
+      showQuery: false
 
     }
   },
@@ -130,8 +131,7 @@ export default defineComponent({
                 response.data.name = response.data.name.slice(1)
               }
               this.setProductName(response.data.name);
-              CloseProductDrawer();
-              this.reload();
+              this.showQuery = false
             })
             .catch((e: any) => {
               console.error('query artifact info failed:', { e });
@@ -149,6 +149,7 @@ export default defineComponent({
     },
 
     handleProductTypeChange(productType: string) {
+      if(productType === this.productType) return
       this.productType = productType
       SbomDataService.queryProductConfig(productType)
         .then((response: ResponseData) => {
@@ -228,7 +229,7 @@ export default defineComponent({
   width: 100%;
   height: auto;
   background-color: #ffffff;
-  padding: 0px 30px 20px 30px;
+  padding: 0px 30px 0px 30px;
   .sbom-header{
     display: flex;
     justify-content: space-between;
@@ -240,8 +241,16 @@ export default defineComponent({
       font-weight: bold;
       color: #000000;
       margin-left: 10px;
+      cursor: pointer;
       img{
         margin-right: 5px;
+      }
+      span{
+        border-left: 1px solid #CFD5E3;
+        padding-left: 15px;
+        margin-left: 15px;
+        font-weight: normal;
+        font-size: 14px;
       }
     }
   }

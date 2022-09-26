@@ -32,9 +32,7 @@
           <el-form-item label="version">
             <el-input v-model="conditionForm.version" clearable />
           </el-form-item>
-          <!-- <el-form-item>
-            <el-button type="primary" :icon="Search" @click="retrieveBinary(conditionFormRef)">Search</el-button>
-          </el-form-item> -->
+          <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
         </el-form>
       </div>
       <div class="sbom-table">
@@ -42,6 +40,7 @@
           ref="singleTableRef" 
           :data="pageData" 
           stripe
+          border
           highlight-current-row 
         >
           <template #empty>
@@ -51,25 +50,25 @@
             </div>
           </template>
           <el-table-column fixed type="index" label="编号" width="70" :index="indexCounter" />
-          <el-table-column fixed property="purl" show-overflow-tooltip label="依赖描述符（PURL）" width="500">
+          <el-table-column property="purl" show-overflow-tooltip label="依赖描述符（PURL）" min-width="500">
             <template #default="scope">
               <span>{{scope.row.purl}}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed property="name" show-overflow-tooltip label="关联软件包名称" width="200" >
+          <el-table-column property="name" show-overflow-tooltip label="关联软件包名称" width="200" >
             <template #default="scope">
               <span>{{scope.row.name}}</span>
             </template>
           </el-table-column>
           <el-table-column property="version" label="版本" width="200" />
-          <el-table-column property="description" show-overflow-tooltip label="软件包描述" >
+          <el-table-column property="description" show-overflow-tooltip label="软件包描述" min-width="500">
             <template #default="scope">
               <span>{{scope.row.description}}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" show-overflow-tooltip label="软件包详情" width="120">
+          <el-table-column fixed="right" show-overflow-tooltip label="更多" width="100">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -162,12 +161,6 @@ export default defineComponent({
     ])
   },
   watch: {
-    conditionForm: {
-      deep: true,
-      handler: function() {
-        this.search()
-      }
-    },
     getProductName() {
       this.retrieveBinary(this.conditionFormRef)
     }

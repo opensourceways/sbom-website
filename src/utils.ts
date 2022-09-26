@@ -58,7 +58,8 @@ export function CloseProductDrawer(): void {
 }
 
 export function IsOpenEulerByProductName(): boolean {
-    const productName = (window as any).SBOM_PRODUCT_NAME;
+    // const productName = (window as any).SBOM_PRODUCT_NAME;
+    const productName = $store.state.productName;
     if (!productName) {
         return false;
     }

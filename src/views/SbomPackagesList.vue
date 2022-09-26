@@ -41,11 +41,16 @@
               <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column property="version" label="版本(epoch:version-release)" width="200"
+          <el-table-column property="version" label="版本(epoch:version-release)" width="250"
             show-overflow-tooltip
             v-if="IsOpenEulerByProductName()" />
-          <el-table-column property="version" label="版本" width="200" v-else />
-          <el-table-column property="licenseConcluded" label="漏洞风险数值" min-width="200">
+          <el-table-column property="version" label="版本" show-overflow-tooltip width="250" v-else>
+            <template #default="scope">
+              <img class="imgIcon" src="@/assets/images/package.png" alt="">
+              <span>{{ scope.row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column property="licenseConcluded" label="漏洞风险数值" width="550">
             <template #default="scope">
               <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">
                 <div 
@@ -59,7 +64,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column property="licenseConcluded" label="License" :formatter="NoAssertionFormat">
+          <el-table-column property="licenseConcluded" label="License" min-width="200" :formatter="NoAssertionFormat">
             <template #default="scope">
               <template v-if="scope.row.licenseConcluded">
                 <div 
@@ -74,11 +79,10 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column property="copyright" label="Copyright" min-width="50" :formatter="NoAssertionFormat" />
-          <el-table-column property="supplier" label="Supplier" show-overflow-tooltip :formatter="NoAssertionFormat" />
-          <el-table-column fixed="right" width="100" label="操作">
+          <el-table-column property="supplier" label="Supplier" min-width="200" show-overflow-tooltip :formatter="NoAssertionFormat" />
+          <el-table-column fixed="right" width="100" label="更多">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>

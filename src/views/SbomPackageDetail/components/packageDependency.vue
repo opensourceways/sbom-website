@@ -25,6 +25,7 @@
         <el-table
           :data="tableData[part.prop]" 
           stripe 
+          border
           highlight-current-row 
         >
         <template #empty>
@@ -184,7 +185,7 @@ const transferPurl: any = (list: any) => {
   flex-wrap: wrap;
   .package-main{
     width: 50%;
-    padding-top: 20px;
+    padding: 20px 0;
     &:nth-child(1){
       border-bottom: 2px dashed #D9E0ED;
       border-right: 2px dashed #D9E0ED;

@@ -10,7 +10,9 @@
           <div class="label">软件包名称:</div><div class="name">{{ sbomData.name }}</div>
         </div>
         <div class="content">
-          <div class="label">版本epoch:version-release:</div><div class="name">{{ sbomData.version }}</div>
+          <div class="label" v-if="productName.includes('openEuler')">版本(epoch:version-release):</div>
+          <div class="label" v-else>版本</div>
+          <div class="name">{{ sbomData.version }}</div>
         </div>
         <div class="content">
           <div class="label">来源信息:</div><div class="name">{{ sbomData.sourceInfo }}</div>
@@ -50,10 +52,18 @@
       </div>
       <div class="content-box inline">
         <div class="content">
-          <div class="label">Home Page:</div><div class="name">{{ sbomData.homepage }}</div>
+          <div class="label">Home Page:</div>
+          <!-- <el-tooltip effect="dark" :content="sbomData.homepage" placement="top">
+            <div class="name link" @click="goPath(sbomData.homepage)">{{ sbomData.homepage }}</div>
+          </el-tooltip> -->
+          <div class="name">{{ sbomData.homepage }}</div>
         </div>
         <div class="content">
-          <div class="label">Download URl:</div><div class="name">{{ sbomData.downloadLocation }}</div>
+          <div class="label">Download Location:</div>
+          <el-tooltip effect="dark" :content="sbomData.downloadLocation" placement="top">
+            <!-- <div class="name link" @click="goPath(sbomData.downloadLocation)">{{ sbomData.downloadLocation }}</div> -->
+            <div class="name">{{ sbomData.downloadLocation }}</div>
+          </el-tooltip>
         </div>
         <div class="content">
           <div class="label">Supplier:</div><div class="name">{{ sbomData.supplier }}</div>
@@ -63,7 +73,7 @@
     <div class="sbomData-part">
       <div class="part-title">
         <img src="@/assets/images/titleIcon2.png" alt="">
-        Dencryption
+        Description
       </div>
       <div class="content-box">
         {{ sbomData.description }}
@@ -83,6 +93,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { IsOpenEulerByProductName } from "@/utils"
 
 export default defineComponent({
   name: "sbom-data",
@@ -106,12 +117,20 @@ export default defineComponent({
         { label: '低', prop: 'lowVulCount' },
         { label: '无风险', prop: 'noneVulCount' },
         { label: '未知', prop: 'unknownVulCount' },
-      ]
+      ],
+      productName: ''
     };
   },
   methods: {
-    
+    goPath(url) {
+      if(url) {
+        window.open(url, '_blank')
+      }
+    }
   },
+  mounted() {
+    this.productName = this.$route.params.productName.toString()
+  }
 });
 </script>
 
@@ -147,7 +166,18 @@ export default defineComponent({
           margin-right: 10px;
           min-width: 60px;
         }
-        
+        .name{
+          max-width: 400px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &.link{
+            cursor: pointer;
+            &:hover{
+              color:#4971FF
+            }
+          }
+        }
         .license{
           height: 32px;
           line-height: 30px;
