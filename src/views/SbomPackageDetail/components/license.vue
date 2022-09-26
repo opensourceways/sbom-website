@@ -7,31 +7,17 @@
       </div>
       <div class="content-box">
         <div class="content">
-          <div class="label spe">LicenseDeclared:</div>
-          <div class="buttons">
-            <template v-if="license.licenseDeclared">
-              <div 
-                class="licenseItem" 
-                v-for="(license,index) in license.licenseDeclared.split('and')" 
-                :key="index"
-              >
-                <span class="dot"></span>
-                <span class="txt">{{ license }}</span>
+          <div class="buttons" v-for="(license, licenseIndex) in licenseContent" :key="licenseIndex">
+            <el-tooltip v-if="license.licenseName" effect="dark" :content="license.licenseName" placement="top">
+              <div class="licenseItem" :class="{ canClick: license.licenseUrl}" @click="goPath(license)">
+                <span :class="['dot', license.legal ? 'green' : 'red']"></span>
+                <span class="txt">{{ license.licenseId }}</span>
               </div>
-            </template>
-          </div>
-        </div>
-      </div>
-      <div class="content-box">
-        <div class="content">
-          <div class="label spe">licenseConcluded:</div>
-          <div class="buttons">
-            <template v-if="license.licenseConcluded">
-              <div class="licenseItem" v-for="(license,index) in license.licenseConcluded.split('and')" :key="index">
-                <span class="dot"></span>
-                <span class="txt">{{ license }}</span>
+            </el-tooltip>
+             <div v-else class="licenseItem" :class="{ canClick: license.licenseUrl}" @click="goPath(license)">
+                <span :class="['dot', license.legal ? 'green' : 'red']"></span>
+                <span class="txt">{{ license.licenseId }}</span>
               </div>
-            </template>
           </div>
         </div>
       </div>
@@ -43,16 +29,13 @@
       </div>
       <div class="content-box inline">
         <div class="content">
-          <!-- <div class="label">organization:</div><div class="name">{{ license.organization }}</div> -->
-          <div class="label">organization:</div><div class="name">http://openeuler.org</div>
+          <div class="label">organization:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].organization : '' }}</div>
         </div>
         <div class="content">
-          <!-- <div class="label">Star  Year:</div><div class="name">{{ license.year }}</div> -->
-          <div class="label">Star  Year:</div><div class="name">2001</div>
+          <div class="label">Start  Year:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].startYear : '' }}</div>
         </div>
         <div class="content">
-          <!-- <div class="label">AdditionalZnfo:</div><div class="name">{{ license.additionalZnfo }}</div> -->
-          <div class="label">AdditionalZnfo:</div><div class="name">http://hive.apache.org/</div>
+          <div class="label">Additional Info:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].additionalInfo : '' }}</div>
         </div>
       </div>
     </div>
@@ -61,6 +44,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import SbomDataService from "@/services/SbomDataService";
+import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   name: "license",
@@ -77,10 +62,33 @@ export default defineComponent({
   },
   data() {
     return {
+      licenseContent: [],
+      copyrightContent: []
     };
   },
   methods: {
-    
+    queryPackageLicenseAndCopyright() {
+      const packageId: string = this.$route.params.id.toString()
+      SbomDataService.queryPackageLicenseAndCopyright(packageId)
+        .then((response: ResponseData) => {
+          const { licenseContent, copyrightContent } = response.data
+          this.licenseContent = licenseContent;
+          this.copyrightContent = copyrightContent;
+        })
+        .catch((e: Error) => {
+          this.licenseContent = []
+          this.copyrightContent = []
+          console.error('query package details failed:', { e });
+        });
+    },
+    goPath(item) {
+      if(item.licenseUrl) {
+        window.open(item.licenseUrl, '_blank')
+      }
+    }
+  },
+  mounted() {
+    this.queryPackageLicenseAndCopyright();
   },
 });
 </script>

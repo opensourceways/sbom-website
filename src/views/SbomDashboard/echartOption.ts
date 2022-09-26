@@ -1,11 +1,12 @@
 import * as echarts from 'echarts';
 const color: Array<string> = [
   '#FF0000',
-  '#D54656',
+  // '#D54656',
   '#FF9126',
   '#EFCE18',
   '#67D68C',
   '#B5E1FF',
+  '#9402ff',
   '#BDBFD1',
 ]
 const licenseColor: Array<string> = [
@@ -88,7 +89,10 @@ const options = {
     },
     yAxis: {
       type: 'value',
-      name: '单位：个数',
+      name: '',
+      nameTextStyle: {
+        align: 'right'
+      },
       splitLine: {
         show: false
       },

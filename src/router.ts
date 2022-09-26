@@ -27,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
   //   component: () => import("@/components/PackagesDetails.vue"),
   // },
   {
-    path: "/sbomPackageDetail/:id",
+    path: "/sbomPackageDetail/:id/:productName",
     name: "sbomPackageDetail",
     component: () => import("@/views/SbomPackageDetail/SbomPackageDetail.vue"),
   },

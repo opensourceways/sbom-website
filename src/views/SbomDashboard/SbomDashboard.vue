@@ -62,6 +62,20 @@
             />
           </div>
         </div>
+        <div class="part">
+          <div class="chart-title">
+            <img src="@/assets/images/titleIcon.png" alt="">
+            Zero-Day漏洞趋势
+          </div>
+          <div class="chart">
+            <SbomEchart 
+              chartId="zeroDayVulnerabilityTrends"
+              chartType="line"
+              :dataList="zeroDayVulnerabilityTrendsData"
+              :props="zeroDayVulTrendProps"
+            />
+          </div>
+        </div>
       </div>
       <div class="chartPart">
         <div class="chartPart-title">
@@ -134,8 +148,8 @@ export default defineComponent({
     return {
       numberModules: [
         { name: 'Packages', prop: 'packageCount', imgSrc: require('@/assets/images/packages.png') },
-        { name: 'Dependencies', prop: 'depCount', imgSrc: require('@/assets/images/dependencies.png') },
         { name: 'Modules', prop: 'moduleCount', imgSrc: require('@/assets/images/modules.png') },
+        { name: 'Dependencies', prop: 'depCount', imgSrc: require('@/assets/images/dependencies.png') },
         { name: 'Runtime  Dependencies', prop: 'runtimeDepCount', imgSrc: require('@/assets/images/runtime.png') },
         { name: '漏洞', prop: 'vulCount', imgSrc: require('@/assets/images/bug.png') },
         { name: 'License类型', prop: 'licenseCount', imgSrc: require('@/assets/images/license.png') },
@@ -176,6 +190,7 @@ export default defineComponent({
       vulnerabilityCountsData: {},
       vulnerabilityComponentsData: {},
       vulnerabilityTrendsData: [],
+      zeroDayVulnerabilityTrendsData: [],
       licenseData: {},
       licenseProps: {
         packageWithLegalLicenseCount: '合规',
@@ -189,6 +204,12 @@ export default defineComponent({
         '低': 'lowVulCount',
         '无风险': 'noneVulCount',
         '未知': 'unknownVulCount'
+      },
+      zeroDayVulTrendProps: {
+        '0 Day': 'criticalVulCount',
+        '1 Day': 'highVulCount',
+        '30 Day': 'mediumVulCount',
+        '90 Day': 'lowVulCount',
       }
     };
   },

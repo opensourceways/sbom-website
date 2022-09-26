@@ -48,7 +48,12 @@ export default defineComponent({
     return {
       emptyImg: require('@/assets/images/no-data.png'),
       chart: null,
-      option: options[this.chartType]
+      option: options[this.chartType],
+      yAxisName: {
+        vulnerabilityCounts: '漏洞数：个',
+        vulnerabilityComponents: '组件数：个',
+        vulnerabilityTrends: '漏洞数：个'
+      }
     }
   },
   methods: {
@@ -80,6 +85,7 @@ export default defineComponent({
           '{a' + index + '|' + params + '}'
         ].join('\n')
       }
+      options.yAxis.name = this.yAxisName[this.chartId]
       return options
     },
     formatTime(timestamp) {
@@ -122,7 +128,7 @@ export default defineComponent({
       }
       options.legend.data = lengendData
       options.xAxis.data = xData.map(date => this.formatTime(date))
-      console.log(options)
+      options.yAxis.name = this.yAxisName[this.chartId]
       return options
     },
     formatDataList(data) {
