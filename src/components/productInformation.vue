@@ -98,7 +98,7 @@ export default defineComponent({
         data: {},
         rules: {},
       }),
-      showQuery: false
+      showQuery: true
 
     }
   },

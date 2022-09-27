@@ -143,6 +143,7 @@ export default defineComponent({
   },
   watch: {
     getProductName() {
+      this.packageName = ''
       this.retrievePackages();
     }
   },

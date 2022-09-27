@@ -7,18 +7,18 @@
       </div>
       <div class="content-box">
         <div class="content">
-          <div class="label">软件包名称:</div><div class="name">{{ sbomData.name }}</div>
+          <div class="label">软件包名称：</div><div class="name">{{ sbomData.name }}</div>
         </div>
         <div class="content">
-          <div class="label" v-if="productName.includes('openEuler')">版本(epoch:version-release):</div>
-          <div class="label" v-else>版本</div>
+          <div class="label" v-if="productName.includes('openEuler')">版本(epoch:version-release)：</div>
+          <div class="label" v-else>版本：</div>
           <div class="name">{{ sbomData.version }}</div>
         </div>
         <div class="content">
-          <div class="label">来源信息:</div><div class="name">{{ sbomData.sourceInfo }}</div>
+          <div class="label">来源信息：</div><div class="name">{{ sbomData.sourceInfo }}</div>
         </div>
         <div class="content">
-          <div class="label">License:</div>
+          <div class="label">License：</div>
           <template v-if="sbomData.licenseDeclared">
             <div 
               class="license" 
@@ -31,7 +31,7 @@
           </template>
         </div>
         <div class="content">
-          <div class="label">漏洞:</div>
+          <div class="label">漏洞：</div>
           <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">
             <div 
               :class="['vulBtns','vul'+vulIndex]" 
