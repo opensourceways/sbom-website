@@ -126,12 +126,10 @@ export default defineComponent({
           SbomDataService.queryProduct(this.productType, this.productForm.data)
             .then((response: ResponseData) => {
               this.productName = response.data.name;
-              // (window as any).SBOM_PRODUCT_NAME = response.data.name;
-              if(response.data.name.startsWith('/')) {
-                response.data.name = response.data.name.slice(1)
-              }
+              (window as any).SBOM_PRODUCT_NAME = response.data.name;
               this.setProductName(response.data.name);
               this.showQuery = false
+              this.productForm.data = {}
             })
             .catch((e: any) => {
               console.error('query artifact info failed:', { e });
@@ -219,7 +217,7 @@ export default defineComponent({
 
   mounted() {
     this.getProductTypeList();
-    // this.productName = this.ParseUriProductName();
+    this.productName = this.ParseUriProductName();
   },
 });
 </script>

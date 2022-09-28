@@ -82,7 +82,7 @@
           <el-table-column property="supplier" label="Supplier" min-width="200" show-overflow-tooltip :formatter="NoAssertionFormat" />
           <el-table-column fixed="right" width="100" label="更多">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -132,7 +132,8 @@ export default defineComponent({
         { label: '低', prop: 'lowVulCount' },
         { label: '无风险', prop: 'noneVulCount' },
         { label: '未知', prop: 'unknownVulCount' },
-      ]
+      ],
+      isOpenEuler: false
 
     };
   },
@@ -142,9 +143,10 @@ export default defineComponent({
     ])
   },
   watch: {
-    getProductName() {
+    getProductName(newVal) {
       this.packageName = ''
       this.retrievePackages();
+      this.isOpenEuler = newVal.includes('openEuler')
     }
   },
   methods: {

@@ -10,7 +10,7 @@
           <div class="label">软件包名称：</div><div class="name">{{ sbomData.name }}</div>
         </div>
         <div class="content">
-          <div class="label" v-if="productName.includes('openEuler')">版本(epoch:version-release)：</div>
+          <div class="label" v-if="flag">版本(epoch:version-release)：</div>
           <div class="label" v-else>版本：</div>
           <div class="name">{{ sbomData.version }}</div>
         </div>
@@ -118,7 +118,7 @@ export default defineComponent({
         { label: '无风险', prop: 'noneVulCount' },
         { label: '未知', prop: 'unknownVulCount' },
       ],
-      productName: ''
+      flag: false
     };
   },
   methods: {
@@ -129,7 +129,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.productName = this.$route.params.productName.toString()
+    this.flag = this.$route.params.flag.toString() === 'true' ? true : false
   }
 });
 </script>
