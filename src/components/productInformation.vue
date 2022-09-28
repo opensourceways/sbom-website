@@ -218,7 +218,9 @@ export default defineComponent({
   mounted() {
     this.getProductTypeList();
     this.productName = this.ParseUriProductName();
-    this.setProductName(this.productName );
+    if(this.productName) {
+      this.setProductName(this.productName);
+    }
   },
 });
 </script>

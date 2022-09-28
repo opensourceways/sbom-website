@@ -165,7 +165,7 @@ export default defineComponent({
   watch: {
     getProductName(newVal) {
       this.retrieveBinary(this.conditionFormRef)
-      this.isOpenEuler = newVal.includes('openEuler')
+      this.isOpenEuler = newVal && newVal.includes('openEuler')
     }
   },
   methods: {

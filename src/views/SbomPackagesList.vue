@@ -146,7 +146,7 @@ export default defineComponent({
     getProductName(newVal) {
       this.packageName = ''
       this.retrievePackages();
-      this.isOpenEuler = newVal.includes('openEuler')
+      this.isOpenEuler = newVal && newVal.includes('openEuler')
     }
   },
   methods: {
