@@ -50,23 +50,18 @@
         <img src="@/assets/images/titleIcon2.png" alt="">
         Source  Control
       </div>
-      <div class="content-box inline">
+      <div class="content-box">
         <div class="content">
           <div class="label">Home Page:</div>
-          <!-- <el-tooltip effect="dark" :content="sbomData.homepage" placement="top">
-            <div class="name link" @click="goPath(sbomData.homepage)">{{ sbomData.homepage }}</div>
-          </el-tooltip> -->
-          <div class="name">{{ sbomData.homepage }}</div>
+          <div :class="['name',{link: formatPointer(sbomData.homepage)}]" @click="goPath(sbomData.homepage)">{{ sbomData.homepage }}</div>
         </div>
         <div class="content">
           <div class="label">Download Location:</div>
-          <el-tooltip effect="dark" :content="sbomData.downloadLocation" placement="top">
-            <!-- <div class="name link" @click="goPath(sbomData.downloadLocation)">{{ sbomData.downloadLocation }}</div> -->
-            <div class="name">{{ sbomData.downloadLocation }}</div>
-          </el-tooltip>
+            <div :class="['name',{link: formatPointer(sbomData.downloadLocation)}]" @click="goPath(sbomData.downloadLocation)">{{ sbomData.downloadLocation }}</div>
         </div>
         <div class="content">
-          <div class="label">Supplier:</div><div class="name">{{ sbomData.supplier }}</div>
+          <div class="label">Supplier:</div>
+          <div :class="['name',{link: formatPointer(sbomData.supplier)}]" @click="goPath(sbomData.supplier)">{{ sbomData.supplier }}</div>
         </div>
       </div>
     </div>
@@ -124,8 +119,15 @@ export default defineComponent({
   methods: {
     goPath(url) {
       if(url) {
-        window.open(url, '_blank')
+        const reg = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])/g
+        const res:any = reg.exec(url)
+        if(res[0]) {
+          window.open(res[0], '_blank')
+        }
       }
+    },
+    formatPointer(text) {
+      return text && (text.includes('https://') || text.includes('http://'))
     }
   },
   mounted() {
@@ -167,7 +169,7 @@ export default defineComponent({
           min-width: 60px;
         }
         .name{
-          max-width: 400px;
+          max-width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;

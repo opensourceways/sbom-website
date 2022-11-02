@@ -32,7 +32,14 @@
       </div>
     </div>
     <div class="query-list" v-if="showQuery">
-      <el-form ref="productFormRef" label-position="left" :model="productForm.data" :rules="productForm.rules" label-width="auto">
+      <el-form 
+        ref="productFormRef" 
+        label-position="left" 
+        :model="productForm.data" 
+        :validate-on-rule-change="false" 
+        :rules="productForm.rules" 
+        label-width="auto"
+      >
         <el-form-item 
           v-for="(item, key) in productConfigList"
           :key="key" 
@@ -129,7 +136,6 @@ export default defineComponent({
               (window as any).SBOM_PRODUCT_NAME = response.data.name;
               this.setProductName(response.data.name);
               this.showQuery = false
-              this.productForm.data = {}
             })
             .catch((e: any) => {
               console.error('query artifact info failed:', { e });
@@ -179,13 +185,11 @@ export default defineComponent({
 
               }
             });
-            this.productForm.data = reactive(formDataMap);
-            this.productForm.rules = reactive(formRuleMap);
-            // reset form validate
-            setTimeout(() => {
+             this.$nextTick(() => {
+              this.productForm.data = reactive(formDataMap);
+              this.productForm.rules = reactive(formRuleMap);
               this.resetProductForm();
-            })
-
+            });
           }
         })
         .catch((e: Error) => {
@@ -220,6 +224,7 @@ export default defineComponent({
     this.productName = this.ParseUriProductName();
     if(this.productName) {
       this.setProductName(this.productName);
+      this.showQuery = false
     }
   },
 });

@@ -6,6 +6,7 @@
           v-for="(module, moduleIndex) in numberModules"
           :key="moduleIndex"
           :class="['module', 'class' + moduleIndex]"
+          @click="handleModule(module)"
         >
           <div class="img">
             <img :src="module.imgSrc" alt="">
@@ -31,6 +32,7 @@
                 chartId="vulnerabilityCounts"
                 chartType="bar"
                 :dataList="vulnerabilityCountsData"
+                @echartsClick="openVulnDialog"
               />
             </div>
           </div>
@@ -51,7 +53,7 @@
         <div class="part">
           <div class="chart-title">
             <img src="@/assets/images/titleIcon.png" alt="">
-            漏洞趋势
+            漏洞消减趋势
           </div>
           <div class="chart">
             <SbomEchart 
@@ -65,7 +67,7 @@
         <div class="part">
           <div class="chart-title">
             <img src="@/assets/images/titleIcon.png" alt="">
-            Zero-Day漏洞趋势
+            Zero-Day漏洞风险跟踪
           </div>
           <div class="chart">
             <SbomEchart 
@@ -92,6 +94,7 @@
                 <div 
                   v-for="(license, licenseIndex) in licenseNumberModules"
                   :key="licenseIndex"
+                  @click="gotoPackages(license.prop)"
                   class="module"
                 >
                   <div :class="['img', 'class' + licenseIndex]">
@@ -108,6 +111,7 @@
                   chartId="license"
                   chartType="bar"
                   :dataList="licenseData"
+                  @echartsClick="gotoPackages"
                 />
               </div>
             </div>
@@ -122,27 +126,48 @@
                 chartId="licenseDistributed"
                 chartType="pie"
                 :dataList="licenseDistributedData"
+                @echartsClick="openLicenseDialog"
               />
             </div>
           </div>
         </div>
       </div>
     </div>
+    <SbomLicenseTable ref="sbomLicenseRef" />
+    <el-dialog
+      title="漏洞详情列表"
+      v-model="showVulnDialog"
+      :close-on-click-modal="false"
+      width="80%"
+      class="sbom-dialog"
+    >
+      <SbomVulnerabilityTable :productName="getProductName" :severity="vulnSeverity" />
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import SbomEchart from '@/views/SbomDashboard/SbomEchart.vue';
 import { mapGetters} from 'vuex';
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
 import { IsSelectArtifact } from "@/utils"
+import SbomLicenseTable from '@/components/SbomLicenseTable.vue';
+import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
 
 export default defineComponent({
   name: "sbom-dashboard",
   components: {
-    SbomEchart
+    SbomEchart,
+    SbomLicenseTable,
+    SbomVulnerabilityTable
+  },
+  setup() {
+    const sbomLicenseRef: any = ref(null)
+    return {
+      sbomLicenseRef
+    }
   },
   data() {
     return {
@@ -210,7 +235,9 @@ export default defineComponent({
         '1 Day': 'highVulCount',
         '30 Day': 'mediumVulCount',
         '90 Day': 'lowVulCount',
-      }
+      },
+      showVulnDialog: false,
+      vulnSeverity: ''
     };
   },
   computed:{
@@ -291,6 +318,41 @@ export default defineComponent({
     initData() {
       this.queryProductStatistics()
       this.queryProductVulTrend()
+    },
+    handleModule(module) {
+      if(module.prop === 'licenseCount') {
+        //License类型
+        this.openLicenseDialog()
+      } else if(module.prop === 'vulCount') {
+        // 漏洞
+        this.openVulnDialog('')
+      }
+    },
+    // 跳转至 软件成分页
+    gotoPackages(prop) {
+      let licenseType = ''
+      if(prop === 'packageWithoutLicenseCount') {
+        licenseType = 'noLicense'
+      } else if(prop === 'packageWithMultiLicenseCount') {
+        licenseType = 'multiLicense'
+      } else if(prop === '合规') {
+        licenseType = 'legalLicense'
+      } else if(prop === '不合规') {
+        licenseType = 'ilegalLicense'
+      }
+      this.$router.push({
+        path: '/sbomPackages',
+        query: {
+          licenseType
+        }
+      })
+    },
+    openLicenseDialog() {
+      this.sbomLicenseRef.toggleDiaog()
+    },
+    openVulnDialog(val) {
+      this.vulnSeverity = val
+      this.showVulnDialog = true
     }
   },
   mounted() {
@@ -308,6 +370,7 @@ export default defineComponent({
     padding-left: 25px;
     border-radius: 4px;
     width: calc((100% - 154px)/6);
+    cursor: pointer;
     .img{
       height: 48px;
       width: 48px;
@@ -412,6 +475,7 @@ export default defineComponent({
           width: 280px;
           border: 1px solid #C2C5E0;
           margin-bottom: 24px;
+          cursor: pointer;
           .img.class0{
             background-color: #C2C5E0;
           }

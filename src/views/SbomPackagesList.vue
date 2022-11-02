@@ -7,8 +7,30 @@
         </div>
         <div class="query-list">
           <div class="query-item">
+            License合规：
+            <el-select v-model="licenseType" clearable placeholder="请选择" @change="search">
+              <el-option
+                v-for="(item, itemIndex) in licenseList"
+                :key="itemIndex"
+                :label="item.label"
+                :value="item.prop"
+              />
+            </el-select>
+          </div>
+          <div class="query-item">
+            漏洞：
+            <el-select v-model="vulSeverity" clearable placeholder="请选择" @change="search">
+              <el-option
+                v-for="(item, itemIndex) in vulSeverityList"
+                :key="itemIndex"
+                :label="item.label"
+                :value="item.prop"
+              />
+            </el-select>
+          </div>
+          <div class="query-item">
             是否精准查询：
-            <el-switch v-model="isExactly" @change="retrievePackages" inline-prompt size="large" active-text="是" inactive-text="否" />
+            <el-switch v-model="isExactly" @change="retrievePackages" inline-prompt active-text="是" inactive-text="否" />
           </div>
           <div class="query-item">
             <el-input 
@@ -47,7 +69,7 @@
           <el-table-column property="version" label="版本" show-overflow-tooltip width="250" v-else>
             <template #default="scope">
               <img class="imgIcon" src="@/assets/images/package.png" alt="">
-              <span>{{ scope.row.name }}</span>
+              <span>{{ scope.row.version }}</span>
             </template>
           </el-table-column>
           <el-table-column property="licenseConcluded" label="漏洞风险数值" width="550">
@@ -57,6 +79,7 @@
                   :class="['vulBtns','vul'+vulIndex]" 
                   v-if="scope.row.statistics && (scope.row.statistics[vul.prop] || scope.row.statistics[vul.prop]===0)"
                   :key="vulIndex"
+                  @click="openVulnDialog(scope.row, vul)"
                 >
                   <span class="txt">{{ vul.label }}</span>
                   <span class="num">{{ scope.row.statistics[vul.prop] }}</span> 
@@ -82,7 +105,7 @@
           <el-table-column property="supplier" label="Supplier" min-width="200" show-overflow-tooltip :formatter="NoAssertionFormat" />
           <el-table-column fixed="right" width="100" label="更多">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -101,6 +124,19 @@
         
       </div>
     </div>
+    <el-dialog
+      title="漏洞详情列表"
+      v-model="showVulnDialog"
+      :close-on-click-modal="false"
+      width="80%"
+      class="sbom-dialog"
+    >
+      <SbomVulnerabilityTable 
+        :productName="getProductName" 
+        :severity="vulnSeverity" 
+        :packageId="packageId"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -111,10 +147,28 @@ import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
 import { IsSelectArtifact, NoAssertionFormat, IsOpenEulerByProductName } from "@/utils"
 import { mapGetters} from 'vuex';
+import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
+
+const vulSeverityList = [
+  { label: '无漏洞', prop: 'NA' },
+  { label: '未知漏洞', prop: 'UNKNOWN' },
+  { label: '无风险漏洞', prop: 'NONE' },
+  { label: '低危漏洞', prop: 'LOW' },
+  { label: '中危漏洞', prop: 'MEDIUM' },
+  { label: '高危漏洞', prop: 'HIGH' },
+  { label: '致命漏洞', prop: 'CRITICAL' },
+]
+const licenseList = [
+  { label: '多license', prop: 'multiLicense' },
+  { label: '无license', prop: 'noLicense' },
+  { label: '合规license', prop: 'legalLicense' },
+  { label: '不合规license', prop: 'ilegalLicense' },
+]
 
 export default defineComponent({
   name: "sbom-packages-list",
   components: {
+    SbomVulnerabilityTable
   },
   data() {
     return {
@@ -133,8 +187,14 @@ export default defineComponent({
         { label: '无风险', prop: 'noneVulCount' },
         { label: '未知', prop: 'unknownVulCount' },
       ],
-      isOpenEuler: false
-
+      isOpenEuler: false,
+      vulSeverityList,
+      vulSeverity: this.$route.query.vulSeverity || '',
+      licenseList,
+      licenseType: this.$route.query.licenseType || '',
+      vulnSeverity: '',
+      packageId: '',
+      showVulnDialog: false
     };
   },
   computed:{
@@ -174,7 +234,7 @@ export default defineComponent({
 
       let requestParam = new FormData()
       // requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME);
-      requestParam.append('productName', this.getProductName);
+      requestParam.append('productName', String(this.getProductName));
       requestParam.append('page', String(this.pageNum - 1));
       requestParam.append('size', String(this.pageSize));
 
@@ -182,7 +242,22 @@ export default defineComponent({
         requestParam.append('packageName', String(this.packageName))
         requestParam.append('isExactly', String(this.isExactly))
       }
-
+      if(this.licenseType) {
+        const licenseType = this.licenseType
+        let prop: any = ''
+        let val: any = true
+        if(licenseType === 'legalLicense' || licenseType === 'ilegalLicense') {
+          prop = 'isLegalLicense'
+          val = licenseType === 'legalLicense'
+        } else {
+          prop = licenseType
+          val = true
+        }
+        requestParam.append(prop, val)
+      }
+      if(this.vulSeverity) {
+        requestParam.append('vulSeverity', String(this.vulSeverity))
+      }
       SbomDataService.querySbomPackagesByPageable(requestParam)
         .then((response: ResponseData) => {
           this.pageData = response.data.content;
@@ -197,6 +272,13 @@ export default defineComponent({
     NoAssertionFormat,
 
     IsOpenEulerByProductName,
+    openVulnDialog(row, item) {
+      if(item) {
+        this.vulnSeverity = item.label
+        this.packageId = row.id
+        this.showVulnDialog = true
+      }
+    }
 
   },
   mounted() {
