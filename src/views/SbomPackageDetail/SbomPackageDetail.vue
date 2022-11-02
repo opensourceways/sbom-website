@@ -3,7 +3,7 @@
     <div class="sbomPackageDetail-main">
       <div class="sbomPackageDetail-title">软件包详情</div>
       <el-tabs v-model="activeName" type="card" class="sbomPackageDetailTabs">
-        <el-tab-pane label="SBOM 数据" name="sbomData">
+        <el-tab-pane label="SBOM 元数据" name="sbomData">
           <sbom-data 
            :sbomData="packageDetails"
           />
@@ -14,7 +14,10 @@
           />
         </el-tab-pane>
         <el-tab-pane label="漏洞" name="bug">
-          <bug />
+          <SbomVulnerabilityTable 
+            :packageId="$route.params.id.toString()"
+            :productName="$route.params.productName.toString()"
+          />
         </el-tab-pane>
         <el-tab-pane label="软件包依赖" name="package">
           <package-dependency />
@@ -28,7 +31,7 @@
 import { defineComponent, ref } from "vue";
 import sbomData from './components/sbomData.vue'
 import license from './components/license.vue'
-import bug from './components/bug.vue'
+import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
 import packageDependency from './components/packageDependency.vue'
 import SbomPackage from "@/types/SbomPackage";
 import SbomDataService from "@/services/SbomDataService";
@@ -39,7 +42,7 @@ export default defineComponent({
   components: {
     sbomData,
     license,
-    bug,
+    SbomVulnerabilityTable,
     packageDependency
   },
   data() {

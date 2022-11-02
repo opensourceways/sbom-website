@@ -1,7 +1,21 @@
 <template>
-  <div id="app">
-    <div class="header" v-if="isHide">
-      <router-link to="/" class="">
+  <div id="app" :class="{ thirdPart }">
+    <div v-if="thirdPart" class="thirdPartHeader">
+      <div class="navList" v-show="$route.name != 'package-details'">
+        <div 
+          v-for="(nav,navIndex) in navList"
+          :key="navIndex"
+          class="navItem" 
+          :class="{active: activeName === nav.value}"
+          @click="goPath(nav)"
+        >
+          <div class="link" :to="nav.path">{{ nav.label }}</div>
+          <div class="Bottomborder"></div>
+        </div>
+      </div>
+    </div>
+    <div class="header" v-if="isShow && !thirdPart">
+      <router-link to="/">
         <img src="@/assets/images/logo.png" alt="">
       </router-link>
       <div class="navList" v-show="$route.name != 'package-details'">
@@ -20,7 +34,7 @@
        <!-- <el-button class="loginBtn">登录</el-button> -->
       </div>
     </div>
-    <template v-if="isHide">
+    <template v-if="isShow">
       <ProductInformation />
     </template>
     <div>
@@ -35,6 +49,7 @@ import { Download, Search, Expand } from '@element-plus/icons-vue'
 import { defineComponent } from "vue";
 import { useRouter } from 'vue-router';
 import ProductInformation from '@/components/productInformation.vue';
+import { mapMutations, mapGetters} from 'vuex';
 
 export default defineComponent({
   name: "App",
@@ -52,27 +67,48 @@ export default defineComponent({
         { label: '软件成分查询', path: '/sbomPackages', value: 'sbomPackages' },
         { label: '开源软件反向追溯链', path: '/sbomTraceChain', value: 'sbomTraceChain' },
       ],
-      activeName: sessionStorage.getItem('activeName') || 'sbomPackages',
-      isHide: false
+      activeName: this.$route.name || '',
+      isShow: false,
+      thirdPart: false
     }
+  },
+  computed:{
+    ...mapGetters([
+      'getIsThirdPart'
+    ])
   },
   methods: {
     goPath(nav: any) {
-      this.activeName = nav.value
-      sessionStorage.setItem('activeName', nav.value)
       this.$router.push({
         path: nav.path
       })
-    }
+    },
+    ...mapMutations(['setIsThirdPart'])
 
   },
   watch: {
     $route: {
       deep: true,
       handler(route) {
-        this.isHide = !route.path.includes('sbomPackageDetail')
+        this.isShow = !route.path.includes('sbomPackageDetail')
+        if(this.isShow) {
+          this.activeName = route.name || ''
+        }
+        // 判断是否第三方平台
+        if(route.query) {
+          const query = route.query
+          if(query.thirdPart) {
+            this.setIsThirdPart(query.thirdPart)
+          }
+        }
       }
+    },
+    getIsThirdPart() {
+      this.thirdPart = this.getIsThirdPart === '1'
     }
+  },
+  mounted() {
+    this.thirdPart = this.getIsThirdPart === '1'
   },
 
   provide() {
@@ -137,7 +173,30 @@ export default defineComponent({
         border:none;
       }
     }
-    
+  }
+  .thirdPartHeader{
+    border-bottom: 1px solid #e7eaeb;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-left: 30px;
+    .navList{
+      display: flex;
+      align-items: center;
+      .navItem{
+        font-size: 16px;
+        color: #191A35;
+        font-weight: bold;
+        padding: 20px 0;
+        margin-right: 50px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        &.active{
+          color: #4971FF;
+          border-bottom-color: #4971FF;
+        }
+      }
+    }
   }
 }
 </style>

@@ -37,7 +37,7 @@
           <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
         </el-form>
       </div>
-      <div class="sbom-table">
+      <div class="sbom-table" v-loading="loading">
         <el-table 
           ref="singleTableRef" 
           :data="pageData" 
@@ -70,7 +70,7 @@
           </el-table-column>
           <el-table-column fixed="right" show-overflow-tooltip label="更多" width="100">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -154,7 +154,8 @@ export default defineComponent({
         name: '',
         version: '',
       }),
-      isOpenEuler: false
+      isOpenEuler: false,
+      loading: false
     };
   },
   computed:{
@@ -195,6 +196,7 @@ export default defineComponent({
 
       await formEl.validate((valid, fields) => {
         if (valid) {
+          this.loading = true
           let requestParam = new FormData()
           // requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME);
           requestParam.append('productName', this.getProductName);
@@ -210,9 +212,11 @@ export default defineComponent({
             .then((response: ResponseData) => {
               this.pageData = response.data.content;
               this.totalElements = response.data.totalElements;
+              this.loading = false
             })
             .catch((e: Error) => {
               this.totalElements = 0
+              this.loading = false
               console.error('query sbom packages by binary failed:', { e });
             });
         }

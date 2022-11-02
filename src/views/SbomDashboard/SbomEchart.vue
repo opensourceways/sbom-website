@@ -172,6 +172,14 @@ export default defineComponent({
       }
       return options
     },
+    
+    chartClick () {
+      this.chart.on('click', params => {
+        if(params.name) {
+          this.$emit('echartsClick', params.name)
+        }
+      })
+    },
     initEchart() {
       let options = {}
       if(this.chartType === 'bar') {
@@ -182,6 +190,7 @@ export default defineComponent({
         options = this.formatPie()
       }
       this.chart.setOption(options)
+      this.chartClick()
     }
   },
   watch: {
