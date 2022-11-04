@@ -54,14 +54,20 @@ class SbomDataService {
   queryPackageVulsById(packageId: string): Promise<any> {
     return http.get(`/queryPackageStatistics/${packageId}`);
   }
-  queryPackageVulnerability(productName: string, str: string): Promise<any> {
+  queryVulnerability(productName: string, str: string): Promise<any> {
     return http.get(`/queryVulnerability/${productName}?${str}`);
+  }
+  queryPackageVulnerability(packageId: string, page: number, size: number): Promise<any> {
+    return http.get(`/queryPackageVulnerability/${packageId}?page=${page}&size=${size}`);
   }
   queryPackageLicenseAndCopyright(packageId: string): Promise<any> {
     return http.get(`/queryPackageLicenseAndCopyright/${packageId}`);
   }
   queryLicenseUniversalApi(productName: string, page: number, size: number): Promise<any> {
     return http.get(`/queryLicenseUniversalApi?productName=${productName}&page=${page}&size=${size}`);
+  }
+  queryVulImpact(productName: string, vulId: string): Promise<any> {
+    return http.get(`/queryVulImpact/${productName}?vulId=${vulId}`);
   }
 }
 

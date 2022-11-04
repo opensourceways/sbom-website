@@ -122,7 +122,8 @@ export default defineComponent({
       dataList: {
         packageList: [] as Map<string, any>[],
         provideList: [] as Map<string, any>[], 
-        externalList: [] as Map<string, any>[]
+        externalList: [] as Map<string, any>[],
+        relationshipList: [] as Map<string, any>[],
       }
     };
   },
@@ -139,10 +140,11 @@ export default defineComponent({
     },
     getData() {
       const { packageInfo, module, dependency, runtime} = this.search
-      const { packageList, provideList, externalList } = this.dataList
+      const { packageList, provideList, externalList, relationshipList } = this.dataList
       this.tableData.packageInfo = filterTableData(packageInfo, packageList);
       this.tableData.module =  filterTableData(module, provideList);
       this.tableData.dependency =  filterTableData(dependency, externalList);
+      this.tableData.runtime =  filterTableData(runtime, relationshipList);
     },
     handlePageChange(prop: string, val: number) {
       console.log(prop,val)

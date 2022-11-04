@@ -172,7 +172,6 @@ export default defineComponent({
       }
       return options
     },
-    
     chartClick () {
       this.chart.on('click', params => {
         if(params.name) {
@@ -180,14 +179,67 @@ export default defineComponent({
         }
       })
     },
+    formatGraph() {
+      const { nodes, edges} = this.dataList
+      const option = {
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+          {
+            type: 'graph',
+            layout: 'none',
+            // progressiveThreshold: 700,
+            data: nodes && nodes.map(function (node) {
+              return {
+                x: node.x,
+                y: node.y,
+                id: node.id,
+                name: node.label,
+                symbolSize: node.size,
+                itemStyle: {
+                  color: node.color
+                },
+                label:{
+                  show: node.size > 30,
+                  position: 'right'
+                }
+              };
+            }),
+            edges: edges && edges.map(function (edge) {
+              return {
+                source: edge.sourceID,
+                target: edge.targetID
+              };
+            }),
+            emphasis: {
+              // focus: 'adjacency',
+              label: {
+                position: 'right',
+                show: false
+              }
+            },
+            roam: true,
+            lineStyle: {
+              width: 1,
+              curveness: 0.3,
+              // opacity: 0.7
+            }
+          }
+        ]
+      };
+      return option
+    },
     initEchart() {
       let options = {}
       if(this.chartType === 'bar') {
         options = this.formatBar()
       } else if(this.chartType === 'line') {
         options = this.formatLine()
-      } else {
+      } else if(this.chartType === 'pie') {
         options = this.formatPie()
+      } else if(this.chartType === 'graph') {
+        options = this.formatGraph()
       }
       this.chart.setOption(options)
       this.chartClick()
@@ -200,9 +252,8 @@ export default defineComponent({
           if (!document.querySelector(`#echart${this.chartId}`)) {
             this.createDom(this.chartId)
           }
-          // this.chart && this.chart.dispose()
-          // this.chart && this.chart.clear()
-          // this.chart = init(document.querySelector(`#echart${this.chartId}`))
+          this.chart && this.chart.dispose()
+          this.chart = markRaw(init(document.querySelector(`#echart${this.chartId}`)))
           this.chart && this.initEchart()
         } else {
           this.chart && this.chart.dispose()
@@ -212,13 +263,13 @@ export default defineComponent({
     }
   },
   mounted () {
-    this.chart && this.chart.clear()
+    this.chart && this.chart.dispose()
     this.chart = markRaw(init(document.querySelector(`#echart${this.chartId}`)))
-    this.initEchart()
+    this.chart && this.initEchart()
   },
-  // beforeDestroy () {
-  //   this.chart = null
-  // }
+  beforeUnmount () {
+    this.chart = null
+  }
 });
 </script>
 <style scoped>

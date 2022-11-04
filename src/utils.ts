@@ -103,3 +103,25 @@ export function ParseUriProductName(): string {
         return (window as any).SBOM_PRODUCT_NAME;
     }
 }
+
+const vulSeverityList = [
+    { label: '不涉及', prop: 'NA' },
+    { label: '未知漏洞', prop: 'UNKNOWN' },
+    { label: '无风险漏洞', prop: 'NONE' },
+    { label: '低危漏洞', prop: 'LOW' },
+    { label: '中危漏洞', prop: 'MEDIUM' },
+    { label: '高危漏洞', prop: 'HIGH' },
+    { label: '致命漏洞', prop: 'CRITICAL' },
+]
+export function formatVulSeverity(param:string) {
+    let val = ''
+    if(param) {
+        const tmp = vulSeverityList.find(item => item.label.includes(param))
+        if(tmp) {
+            val = tmp.prop
+        }
+    }
+    return val
+}
+
+export { vulSeverityList }
