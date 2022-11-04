@@ -20,6 +20,12 @@
       <div class="chartPart">
         <div class="chartPart-title">
           · 漏洞数据分析
+          <el-tooltip placement="top" effect="light">
+            <template #content> 
+              <img src="@/assets/images/vulSeverity.png" alt="">
+            </template>
+            <el-icon><QuestionFilled /></el-icon>
+          </el-tooltip>
         </div>
         <div class="charts">
           <div class="part">
@@ -46,6 +52,7 @@
                 chartId="vulnerabilityComponents"
                 chartType="bar"
                 :dataList="vulnerabilityComponentsData"
+                @echartsClick="(val) => { gotoPackages(val, 'vulSeverity') }"
               />
             </div>
           </div>
@@ -94,7 +101,7 @@
                 <div 
                   v-for="(license, licenseIndex) in licenseNumberModules"
                   :key="licenseIndex"
-                  @click="gotoPackages(license.prop)"
+                  @click="gotoPackages(license.prop, 'license')"
                   class="module"
                 >
                   <div :class="['img', 'class' + licenseIndex]">
@@ -111,7 +118,7 @@
                   chartId="license"
                   chartType="bar"
                   :dataList="licenseData"
-                  @echartsClick="gotoPackages"
+                  @echartsClick="(val) => { gotoPackages(val, 'license') }"
                 />
               </div>
             </div>
@@ -139,9 +146,13 @@
       v-model="showVulnDialog"
       :close-on-click-modal="false"
       width="80%"
-      class="sbom-dialog"
+      custom-class="sbom-dialog"
     >
-      <SbomVulnerabilityTable :productName="getProductName" :severity="vulnSeverity" />
+      <SbomVulnerabilityTable 
+        :productName="getProductName" 
+        :severity="vulnSeverity" 
+        isInDialog 
+      />
     </el-dialog>
   </div>
 </template>
@@ -152,16 +163,17 @@ import SbomEchart from '@/views/SbomDashboard/SbomEchart.vue';
 import { mapGetters} from 'vuex';
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
-import { IsSelectArtifact } from "@/utils"
+import { IsSelectArtifact, formatVulSeverity } from "@/utils"
 import SbomLicenseTable from '@/components/SbomLicenseTable.vue';
 import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
-
+import { QuestionFilled } from '@element-plus/icons-vue'
 export default defineComponent({
   name: "sbom-dashboard",
   components: {
     SbomEchart,
     SbomLicenseTable,
-    SbomVulnerabilityTable
+    SbomVulnerabilityTable,
+    QuestionFilled
   },
   setup() {
     const sbomLicenseRef: any = ref(null)
@@ -329,29 +341,36 @@ export default defineComponent({
       }
     },
     // 跳转至 软件成分页
-    gotoPackages(prop) {
+    gotoPackages(prop, type) {
       let licenseType = ''
-      if(prop === 'packageWithoutLicenseCount') {
-        licenseType = 'noLicense'
-      } else if(prop === 'packageWithMultiLicenseCount') {
-        licenseType = 'multiLicense'
-      } else if(prop === '合规') {
-        licenseType = 'legalLicense'
-      } else if(prop === '不合规') {
-        licenseType = 'ilegalLicense'
+      let vulSeverity = ''
+      if(type === 'license') {
+        if(prop === 'packageWithoutLicenseCount') {
+          licenseType = 'noLicense'
+        } else if(prop === 'packageWithMultiLicenseCount') {
+          licenseType = 'multiLicense'
+        } else if(prop === '合规') {
+          licenseType = 'legalLicense'
+        } else if(prop === '不合规') {
+          licenseType = 'ilegalLicense'
+        }
+      } else {
+        vulSeverity = formatVulSeverity(prop)
       }
+      
       this.$router.push({
         path: '/sbomPackages',
         query: {
-          licenseType
+          licenseType,
+          vulSeverity
         }
       })
     },
     openLicenseDialog() {
-      this.sbomLicenseRef.toggleDiaog()
+      this.sbomLicenseRef.openDiaog()
     },
     openVulnDialog(val) {
-      this.vulnSeverity = val
+      this.vulnSeverity = formatVulSeverity(val)
       this.showVulnDialog = true
     }
   },

@@ -129,12 +129,13 @@
       v-model="showVulnDialog"
       :close-on-click-modal="false"
       width="80%"
-      class="sbom-dialog"
+      custom-class="sbom-dialog"
     >
       <SbomVulnerabilityTable 
         :productName="getProductName" 
         :severity="vulnSeverity" 
         :packageId="packageId"
+        isInDialog 
       />
     </el-dialog>
   </div>
@@ -148,16 +149,8 @@ import ResponseData from "@/types/ResponseData";
 import { IsSelectArtifact, NoAssertionFormat, IsOpenEulerByProductName } from "@/utils"
 import { mapGetters} from 'vuex';
 import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
+import { vulSeverityList, formatVulSeverity } from "@/utils"
 
-const vulSeverityList = [
-  { label: '无漏洞', prop: 'NA' },
-  { label: '未知漏洞', prop: 'UNKNOWN' },
-  { label: '无风险漏洞', prop: 'NONE' },
-  { label: '低危漏洞', prop: 'LOW' },
-  { label: '中危漏洞', prop: 'MEDIUM' },
-  { label: '高危漏洞', prop: 'HIGH' },
-  { label: '致命漏洞', prop: 'CRITICAL' },
-]
 const licenseList = [
   { label: '多license', prop: 'multiLicense' },
   { label: '无license', prop: 'noLicense' },
@@ -274,7 +267,7 @@ export default defineComponent({
     IsOpenEulerByProductName,
     openVulnDialog(row, item) {
       if(item) {
-        this.vulnSeverity = item.label
+        this.vulnSeverity = formatVulSeverity(item.label)
         this.packageId = row.id
         this.showVulnDialog = true
       }

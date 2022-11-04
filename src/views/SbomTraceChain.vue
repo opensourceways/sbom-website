@@ -9,10 +9,11 @@
       <div class="table-form">
         <el-form ref="conditionFormRef" class="query-list" :model="conditionForm" :rules="validateRules" label-width="auto" status-icon>
           <el-form-item label="依赖类型" prop="binaryType">
-            <el-select v-model="conditionForm.binaryType">
+            <el-select v-model="conditionForm.binaryType" @change="handleBinaryType">
               <el-option label="Package" value="PACKAGE_MANAGER"></el-option>
               <el-option label="Module" value="PROVIDE_MANAGER"></el-option>
               <el-option label="Dependency" value="EXTERNAL_MANAGER"></el-option>
+              <el-option label="Runtime Dependency" value="RELATIONSHIP_MANAGER"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="包管理器类型" prop="type">
@@ -23,6 +24,7 @@
               <el-option label="Gitee" value="gitee" />
               <el-option label="Github" value="github" />
               <el-option label="Gitlab" value="gitlab" />
+              <el-option label="Generic" value="generic" />
             </el-select>
           </el-form-item>
           <el-form-item label="namespace">
@@ -31,11 +33,20 @@
           <el-form-item label="name" prop="name">
             <el-input v-model="conditionForm.name" clearable />
           </el-form-item>
-          <el-form-item label="version">
-            <el-input v-model="conditionForm.version" clearable />
+          <el-form-item label="Version区间查询" prop="isSection">
+            <el-switch v-model="isSection" clearable 
+              :disabled="sectionDisabled"
+              style="--el-switch-on-color: #4971ff;"
+            />
           </el-form-item>
-          <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
+          <template v-if="isSection">
+            <el-input class="input" v-model="conditionForm.startVersion" clearable /> 
+            <span class="spe">--</span> 
+            <el-input class="input" v-model="conditionForm.endVersion" clearable /> 
+          </template>
+          <el-input class="input" v-else v-model="conditionForm.version" clearable />
         </el-form>
+          <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
       </div>
       <div class="sbom-table" v-loading="loading">
         <el-table 
@@ -97,6 +108,7 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from "vue";
 import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
@@ -153,9 +165,13 @@ export default defineComponent({
         namespace: '',
         name: '',
         version: '',
+        startVersion: '',
+        endVersion: '',
       }),
       isOpenEuler: false,
-      loading: false
+      loading: false,
+      isSection: false,
+      sectionDisabled: false
     };
   },
   computed:{
@@ -196,7 +212,6 @@ export default defineComponent({
 
       await formEl.validate((valid, fields) => {
         if (valid) {
-          this.loading = true
           let requestParam = new FormData()
           // requestParam.append('productName', (window as any).SBOM_PRODUCT_NAME);
           requestParam.append('productName', this.getProductName);
@@ -204,10 +219,22 @@ export default defineComponent({
           requestParam.append('type', this.conditionForm.type);
           requestParam.append('namespace', this.conditionForm.namespace);
           requestParam.append('name', this.conditionForm.name);
-          requestParam.append('version', this.conditionForm.version);
           requestParam.append('page', String(this.pageNum - 1))
           requestParam.append('size', String(this.pageSize))
-
+          if(this.isSection) {
+            if(!this.conditionForm.startVersion && !this.conditionForm.endVersion) {
+              ElMessage({
+                message: 'Version区间查询至少输入一个查询条件！',
+                type: 'warning',
+              })
+              return
+            }
+            requestParam.append('startVersion', String(this.conditionForm.startVersion))
+            requestParam.append('endVersion', String(this.conditionForm.endVersion))
+          } else {
+            requestParam.append('version', this.conditionForm.version);
+          }
+          this.loading = true
           SbomDataService.querySbomPackagesByBinary(requestParam)
             .then((response: ResponseData) => {
               this.pageData = response.data.content;
@@ -222,7 +249,14 @@ export default defineComponent({
         }
       })
     },
-
+    handleBinaryType(val) {
+      if(val === 'RELATIONSHIP_MANAGER') {
+        this.isSection = false
+        this.sectionDisabled = true
+      } else {
+        this.sectionDisabled = false
+      }
+    }
   },
   mounted() {
     this.retrieveBinary(undefined);

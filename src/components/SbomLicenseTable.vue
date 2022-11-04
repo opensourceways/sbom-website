@@ -4,7 +4,7 @@
     v-model="dialogVisible"
     :close-on-click-modal="false"
     width="70%"
-    class="sbom-dialog"
+    custom-class="sbom-dialog"
   >
   <div class="sbom-table">
     <el-table
@@ -68,7 +68,7 @@ export default defineComponent({
       dialogVisible: false,
       pagination: defaultPagination(),
       columns: [
-        { label: '名称', prop: 'licenseName', link: true },
+        { label: '名称', prop: 'licenseId', link: true },
         { label: '是否合规', prop: 'isLegal' },
         { label: '数量', prop: 'count' },
       ],
@@ -109,11 +109,9 @@ export default defineComponent({
           console.error('query package details failed:', { e });
         });
     },
-    toggleDiaog() {
-      this.dialogVisible = !this.dialogVisible
-      if(this.dialogVisible) {
-        this.getDataList()
-      }
+    openDiaog() {
+      this.dialogVisible = true
+      this.getDataList()
     }
   },
 });
