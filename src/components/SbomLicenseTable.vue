@@ -27,7 +27,7 @@
         :show-overflow-tooltip="col.showTooltip"
       >
         <template #default="scope">
-          <div v-if="col.link" @click="goPath(scope.row)" class="link">{{ scope.row[col.prop] }}</div>
+          <div v-if="col.link" @click="goPath(scope.row)" :class="{ link: scope.row.licenseUrl }">{{ scope.row[col.prop] }}</div>
           <span v-else>{{ scope.row[col.prop] }}</span>
         </template>
       </el-table-column>
