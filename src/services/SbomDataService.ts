@@ -4,11 +4,23 @@ import { ResponseType, AxiosRequestConfig } from "axios";
 class SbomDataService {
 
   queryProductType(): Promise<any> {
-    return http.get("/queryProductType");
+    return http({
+      url: `/queryProductType`,
+      method: 'get',
+      headers: {
+        hideLoading: true 
+      }
+    })
   }
 
   queryProductConfig(productType: string): Promise<any> {
-    return http.get(`/queryProductConfig/${productType}`);
+    return http({
+      url: `/queryProductConfig/${productType}`,
+      method: 'get',
+      headers: {
+        hideLoading: true 
+      }
+    })
   }
 
   queryProduct(productType: string, data: any): Promise<any> {

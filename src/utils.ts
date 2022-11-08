@@ -9,16 +9,26 @@ export function ParseFileNameFromHeader(response: ResponseData) {
     return contentDispositionArr.length == 2 ? contentDispositionArr[1] : "";
 }
 
+let loadingInstance: any = null;
+
 export function ShowLoading(loadingText = "") {
-    ElLoading.service({
+    loadingInstance = ElLoading.service({
         fullscreen: true,
         text: loadingText
     });
 }
+export function ShowFullScreenLoading(loadingText = "") {
+    loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: loadingText,
+        background: 'rgba(0, 0, 0, 0.7)',
+        customClass: 'loading-win'
+    });
+}
 
 export function HideLoading() {
-    const loadingInstance = ElLoading.service();
-    loadingInstance.close();
+    // const loadingInstance = ElLoading.service();
+    loadingInstance && loadingInstance.close();
 }
 
 export function IsSelectArtifact(): boolean {

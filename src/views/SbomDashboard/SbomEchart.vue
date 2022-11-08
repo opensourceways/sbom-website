@@ -201,7 +201,7 @@ export default defineComponent({
                   color: node.color
                 },
                 label:{
-                  show: node.size > 30,
+                  show: node.nodeType !== 'transitiveDep',
                   position: 'right'
                 }
               };
@@ -213,7 +213,7 @@ export default defineComponent({
               };
             }),
             emphasis: {
-              // focus: 'adjacency',
+              focus: 'adjacency',
               label: {
                 position: 'right',
                 show: false
@@ -223,7 +223,6 @@ export default defineComponent({
             lineStyle: {
               width: 1,
               curveness: 0.3,
-              // opacity: 0.7
             }
           }
         ]

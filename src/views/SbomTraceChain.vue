@@ -39,16 +39,19 @@
               style="--el-switch-on-color: #4971ff;"
             />
           </el-form-item>
-          <template v-if="isSection">
-            <el-input class="input" v-model="conditionForm.startVersion" clearable /> 
-            <span class="spe">--</span> 
-            <el-input class="input" v-model="conditionForm.endVersion" clearable /> 
-          </template>
-          <el-input class="input" v-else v-model="conditionForm.version" clearable />
+          <el-form-item label="" label-width="0">
+            <template v-if="isSection">
+              <el-input class="input" v-model="conditionForm.startVersion" clearable /> 
+              <span class="spe">--</span> 
+              <el-input class="input" v-model="conditionForm.endVersion" clearable /> 
+            </template>
+            <el-input class="input" v-else v-model="conditionForm.version" clearable />
+          </el-form-item>
+          
         </el-form>
           <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
       </div>
-      <div class="sbom-table" v-loading="loading">
+      <div class="sbom-table">
         <el-table 
           ref="singleTableRef" 
           :data="pageData" 
@@ -169,7 +172,6 @@ export default defineComponent({
         endVersion: '',
       }),
       isOpenEuler: false,
-      loading: false,
       isSection: false,
       sectionDisabled: false
     };
@@ -234,16 +236,13 @@ export default defineComponent({
           } else {
             requestParam.append('version', this.conditionForm.version);
           }
-          this.loading = true
           SbomDataService.querySbomPackagesByBinary(requestParam)
             .then((response: ResponseData) => {
               this.pageData = response.data.content;
               this.totalElements = response.data.totalElements;
-              this.loading = false
             })
             .catch((e: Error) => {
               this.totalElements = 0
-              this.loading = false
               console.error('query sbom packages by binary failed:', { e });
             });
         }

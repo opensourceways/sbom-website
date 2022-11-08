@@ -31,7 +31,7 @@
         </el-icon> -->
       </div>
     </div>
-    <div class="query-list" v-if="showQuery">
+    <div class="query-list" v-show="showQuery">
       <el-form 
         ref="productFormRef" 
         label-position="left" 
@@ -150,11 +150,13 @@ export default defineComponent({
     reset() {
       this.productForm.data = {}
       this.setProductName('')
+      this.resetProductForm();
     },
 
     handleProductTypeChange(productType: string) {
       if(productType === this.productType) return
       this.productType = productType
+      this.productForm.data = {}
       SbomDataService.queryProductConfig(productType)
         .then((response: ResponseData) => {
           this.productConfigList = response.data;
@@ -185,7 +187,7 @@ export default defineComponent({
 
               }
             });
-             this.$nextTick(() => {
+            this.$nextTick(() => {
               this.productForm.data = reactive(formDataMap);
               this.productForm.rules = reactive(formRuleMap);
               this.resetProductForm();

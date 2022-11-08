@@ -5,7 +5,7 @@
         <div 
           v-for="(module, moduleIndex) in numberModules"
           :key="moduleIndex"
-          :class="['module', 'class' + moduleIndex]"
+          :class="['module', 'class' + moduleIndex, { canClick: module.canClick }]"
           @click="handleModule(module)"
         >
           <div class="img">
@@ -20,7 +20,7 @@
       <div class="chartPart">
         <div class="chartPart-title">
           · 漏洞数据分析
-          <el-tooltip placement="top" effect="light">
+          <el-tooltip placement="right" effect="light">
             <template #content> 
               <img src="@/assets/images/vulSeverity.png" alt="">
             </template>
@@ -188,8 +188,8 @@ export default defineComponent({
         { name: 'Modules', prop: 'moduleCount', imgSrc: require('@/assets/images/modules.png') },
         { name: 'Dependencies', prop: 'depCount', imgSrc: require('@/assets/images/dependencies.png') },
         { name: 'Runtime  Dependencies', prop: 'runtimeDepCount', imgSrc: require('@/assets/images/runtime.png') },
-        { name: '漏洞', prop: 'vulCount', imgSrc: require('@/assets/images/bug.png') },
-        { name: 'License类型', prop: 'licenseCount', imgSrc: require('@/assets/images/license.png') },
+        { name: '漏洞', prop: 'vulCount', imgSrc: require('@/assets/images/bug.png'), canClick: true },
+        { name: 'License类型', prop: 'licenseCount', imgSrc: require('@/assets/images/license.png'), canClick: true },
       ],
       licenseNumberModules: [
         { name: 'Libraries without licence', prop: 'packageWithoutLicenseCount', imgSrc: require('@/assets/images/licenseSingle.png') },
@@ -219,7 +219,7 @@ export default defineComponent({
         packageWithCriticalVulCount: '致命',
         packageWithHighVulCount: '高',
         packageWithMediumVulCount: '中',
-        lowVulpackageWithLowVulCountCount: '低',
+        packageWithLowVulCount: '低',
         packageWithNoneVulCount: '无风险',
         packageWithUnknownVulCount: '未知',
         packageWithoutVulCount: '不涉及'
@@ -332,6 +332,9 @@ export default defineComponent({
       this.queryProductVulTrend()
     },
     handleModule(module) {
+      if (!IsSelectArtifact()) {
+        return
+      }
       if(module.prop === 'licenseCount') {
         //License类型
         this.openLicenseDialog()
@@ -389,7 +392,9 @@ export default defineComponent({
     padding-left: 25px;
     border-radius: 4px;
     width: calc((100% - 154px)/6);
-    cursor: pointer;
+    &.canClick{
+      cursor: pointer;
+    }
     .img{
       height: 48px;
       width: 48px;
@@ -470,7 +475,7 @@ export default defineComponent({
         height: 47px;
         line-height: 35px;
         border-bottom: 1px solid #EBEBEB;
-        background-color: #F8F9FA;
+        // background-color: #F8F9FA;
         font-size: 16px;
         font-weight: bold;
         color: #000000;
