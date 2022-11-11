@@ -18,24 +18,33 @@ const apiClient: AxiosInstance = axios.create({
 
 
 //请求拦截器
-apiClient.interceptors.request.use((config) => {
-  if(!config.headers.hideLoading) {
-    ShowFullScreenLoading('Loading...')
+apiClient.interceptors.request.use(
+  config => {
+    if(!config.headers.hideLoading) {
+      ShowFullScreenLoading('Loading...')
+    }
+    return config
+  }, 
+  error => {
+    HideLoading()
+    return Promise.reject(error)
   }
-  return config
-}, (error) => {
-  HideLoading()
-  return error
-})
+)
  
 //响应拦截器
-apiClient.interceptors.response.use((response) => {
-  if (response.data.code === 400) {
-    ElMessage('error', response.data.message)
-    return Promise.reject(response.data.message)
+apiClient.interceptors.response.use(
+  response => {
+    if (response.data.code === 400) {
+      ElMessage('error', response.data.message)
+      return Promise.reject(response.data.message)
+    }
+    HideLoading()
+    return Promise.resolve(response)
+  },
+  error => {
+    HideLoading()
+    return Promise.reject(error)
   }
-  HideLoading()
-  return Promise.resolve(response)
-})
+)
 
 export default apiClient;

@@ -16,7 +16,7 @@
         <el-tab-pane label="漏洞" name="bug">
           <SbomVulnerabilityTable 
             :packageId="$route.params.id.toString()"
-            :productName="$route.params.productName.toString()"
+            :productName="productName"
           />
         </el-tab-pane>
         <el-tab-pane label="软件包依赖" name="package">
@@ -36,6 +36,7 @@ import packageDependency from './components/packageDependency.vue'
 import SbomPackage from "@/types/SbomPackage";
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
+import { ParseUriProductName } from '@/utils';
 
 export default defineComponent({
   name: "sbom-package-detail",
@@ -49,6 +50,8 @@ export default defineComponent({
     return {
       activeName: 'sbomData',
       packageDetails: {} as SbomPackage,
+      productName: '',
+      ParseUriProductName: ParseUriProductName,
     };
   },
   methods: {
@@ -72,6 +75,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.productName = this.ParseUriProductName()
     this.queryPackageDetails(this.$route.params.id.toString());
     this.queryPackageVuls(this.$route.params.id.toString());
   },

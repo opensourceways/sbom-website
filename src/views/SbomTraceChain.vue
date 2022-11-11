@@ -84,7 +84,7 @@
           </el-table-column>
           <el-table-column fixed="right" show-overflow-tooltip label="更多" width="100">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '?productName=' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -184,7 +184,7 @@ export default defineComponent({
   watch: {
     getProductName(newVal) {
       this.retrieveBinary(this.conditionFormRef)
-      this.isOpenEuler = newVal && newVal.includes('openEuler')
+      this.formatIsOpeneuler()
     }
   },
   methods: {
@@ -255,10 +255,14 @@ export default defineComponent({
       } else {
         this.sectionDisabled = false
       }
+    },
+    formatIsOpeneuler() {
+      this.isOpenEuler = this.getProductName && this.getProductName.includes('openEuler')
     }
   },
   mounted() {
     this.retrieveBinary(undefined);
+    this.formatIsOpeneuler()
   },
 });
 </script>

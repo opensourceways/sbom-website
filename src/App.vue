@@ -186,7 +186,6 @@ export default defineComponent({
       .navItem{
         font-size: 16px;
         color: #191A35;
-        font-weight: bold;
         padding: 20px 0;
         margin-right: 50px;
         cursor: pointer;

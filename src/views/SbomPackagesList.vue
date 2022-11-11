@@ -105,7 +105,7 @@
           <el-table-column property="supplier" label="Supplier" min-width="200" show-overflow-tooltip :formatter="NoAssertionFormat" />
           <el-table-column fixed="right" width="100" label="更多">
             <template #default="props">
-              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '/' + getProductName" target="_blank" class="nav-link">详情</router-link>
+              <router-link :to="'/sbomPackageDetail/' + props.row.id + '/' + isOpenEuler + '?productName=' + getProductName" target="_blank" class="nav-link">详情</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -196,10 +196,10 @@ export default defineComponent({
     ])
   },
   watch: {
-    getProductName(newVal) {
+    getProductName() {
       this.packageName = ''
       this.retrievePackages();
-      this.isOpenEuler = newVal && newVal.includes('openEuler')
+      this.formatIsOpeneuler()
     }
   },
   methods: {
@@ -271,11 +271,14 @@ export default defineComponent({
         this.packageId = row.id
         this.showVulnDialog = true
       }
+    },
+    formatIsOpeneuler() {
+      this.isOpenEuler = this.getProductName && this.getProductName.includes('openEuler')
     }
-
   },
   mounted() {
     this.retrievePackages();
+    this.formatIsOpeneuler()
   },
 });
 </script>
