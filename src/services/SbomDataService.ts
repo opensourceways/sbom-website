@@ -75,8 +75,12 @@ class SbomDataService {
   queryPackageLicenseAndCopyright(packageId: string): Promise<any> {
     return http.get(`/queryPackageLicenseAndCopyright/${packageId}`);
   }
-  queryLicenseUniversalApi(productName: string, page: number, size: number): Promise<any> {
-    return http.get(`/queryLicenseUniversalApi?productName=${productName}&page=${page}&size=${size}`);
+  queryLicenseUniversalApi(params:any): Promise<any> {
+    return http({
+      url: `/queryLicenseUniversalApi`,
+      method: 'get',
+      params
+    })
   }
   queryVulImpact(productName: string, vulId: string): Promise<any> {
     return http.get(`/queryVulImpact/${productName}?vulId=${vulId}`);

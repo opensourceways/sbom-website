@@ -133,7 +133,7 @@
                 chartId="licenseDistributed"
                 chartType="pie"
                 :dataList="licenseDistributedData"
-                @echartsClick="openLicenseDialog"
+                @echartsClick="(val) => { openLicenseDialog('count', val) }"
               />
             </div>
           </div>
@@ -337,7 +337,7 @@ export default defineComponent({
       }
       if(module.prop === 'licenseCount') {
         //License类型
-        this.openLicenseDialog()
+        this.openLicenseDialog('licenseId', '')
       } else if(module.prop === 'vulCount') {
         // 漏洞
         this.openVulnDialog('')
@@ -369,7 +369,9 @@ export default defineComponent({
         }
       })
     },
-    openLicenseDialog() {
+    openLicenseDialog(orderBy, licenseId) {
+      this.sbomLicenseRef.orderBy = orderBy
+      this.sbomLicenseRef.licenseId = licenseId
       this.sbomLicenseRef.openDiaog()
     },
     openVulnDialog(val) {
@@ -388,10 +390,10 @@ export default defineComponent({
   .module{
     display: flex;
     align-items: center;
-    height: 108px;
+    height: 95px;
     padding-left: 25px;
     border-radius: 4px;
-    width: calc((100% - 154px)/6);
+    width: calc((100% - 100px)/6);
     &.canClick{
       cursor: pointer;
     }
@@ -406,13 +408,13 @@ export default defineComponent({
     .numberTxt{
       margin-left: 30px;
       .number{
-        font-size: 36px;
+        font-size: 30px;
         font-weight: 600;
         color: #FEFEFF;
         margin-top:-10px;
       }
       .txt{
-        font-size: 14px;
+        font-size: 13px;
         font-weight: bold;
         color: #FFFFFF;
         opacity: 0.6;

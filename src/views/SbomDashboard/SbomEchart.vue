@@ -182,7 +182,11 @@ export default defineComponent({
     formatGraph() {
       const { nodes, edges} = this.dataList
       const option = {
-        tooltip: {},
+        tooltip: {
+          formatter: function(params) {
+            return `<div style="display:block;max-width: 250px;word-break: break-all;word-wrap: break-word;white-space:pre-wrap">${params.name}</div>`
+          }
+        },
         animationDurationUpdate: 1500,
         animationEasingUpdate: 'quinticInOut',
         series: [

@@ -72,7 +72,9 @@ export default defineComponent({
         { label: '是否合规', prop: 'isLegal' },
         { label: '数量', prop: 'count' },
       ],
-      tableData: []
+      tableData: [],
+      licenseId: '',
+      orderBy: ''
     };
   },
   computed:{
@@ -96,7 +98,19 @@ export default defineComponent({
       }
     },
     getDataList() {
-      SbomDataService.queryLicenseUniversalApi(this.getProductName, this.pagination.pageNum - 1, this.pagination.pageSize)
+      let params:any = {
+        productName: this.getProductName,
+        pageNum: this.pagination.pageNum - 1,
+        pageSize: this.pagination.pageSize
+      }
+      if(this.orderBy) {
+        params.orderBy = this.orderBy
+      }
+      if(this.licenseId) {
+        const licenseId = this.licenseId
+        params.licenseId = licenseId === '其他' ? '' : licenseId
+      }
+      SbomDataService.queryLicenseUniversalApi(params)
         .then((response: ResponseData) => {
           response.data.content.length && response.data.content.map(item => {
             item.isLegal = item.legal ? '合规' : '不合规'

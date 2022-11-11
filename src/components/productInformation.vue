@@ -12,17 +12,18 @@
     <div class="orgnization" v-if="showQuery">
       <div class="label">开源社区：</div>
       <div class="orgnization-btns">
-        <div 
+        <el-button 
           class="orgnization-btn" 
           v-for="item in productTypeList" 
           :key="item" 
           :label="item" 
           :value="item"
+          :disabled="getIsThirdPart"
           :class="{active: productType === item}"
           @click="handleProductTypeChange(item)"
         >
           {{ item }}
-        </div>
+        </el-button>
       </div>
       <div class="search">
         <!-- 筛选
@@ -105,13 +106,19 @@ export default defineComponent({
         data: {},
         rules: {},
       }),
-      showQuery: true
+      showQuery: true,
+      communitys: {
+        'openeuler': 'openEuler',
+        'mindspore': 'MindSpore',
+        'opengauss': 'openGauss',
+      }
 
     }
   },
   computed:{
     ...mapGetters([
-      'getProductName'
+      'getProductName',
+      'getIsThirdPart'
     ])
   },
   methods: {
@@ -211,6 +218,21 @@ export default defineComponent({
         this.isRouterAlive = true;
       })
     },
+    getParams(prop) {
+      let val = ''
+      const url = window.location.hash.split('?')[1]
+      if(url) {
+        const params = url.split('&')
+        if(params && params.length > 1) {
+          params.map(prams => {
+            if(prams.includes(prop)) {
+              val = prams.split('=')[1] 
+            }
+          })
+        }
+      }
+      return val
+    },
     ...mapMutations(['setProductName'])
 
   },
@@ -227,6 +249,13 @@ export default defineComponent({
     if(this.productName) {
       this.setProductName(this.productName);
       this.showQuery = false
+    }
+    if(this.getParams('community')) {
+      const productType = this.communitys[this.getParams('community')]
+      if(productType) {
+        this.showQuery = true
+        this.handleProductTypeChange(productType)
+      }
     }
   },
 });
@@ -283,16 +312,17 @@ export default defineComponent({
       justify-content: flex-start;
       .orgnization-btn{
         height: 36px;
-        line-height: 32px;
+        line-height: 36px;
         padding-left:16px;
         padding-right:16px;
         background-color: #FFFFFF;
         border: 1px solid #CFD5E3;
         border-radius: 18px;
-        cursor: pointer;
+        // cursor: pointer;
         font-size: 14px;
         color:#CFD5E3;
         margin-right: 25px;
+        font-weight: 400;
         &.active{
           background-color: #4971FF;
           color: #ffffff;
