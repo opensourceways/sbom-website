@@ -100,15 +100,15 @@ export default defineComponent({
     getDataList() {
       let params:any = {
         productName: this.getProductName,
-        pageNum: this.pagination.pageNum - 1,
-        pageSize: this.pagination.pageSize
+        page: this.pagination.pageNum - 1,
+        size: this.pagination.pageSize
       }
       if(this.orderBy) {
         params.orderBy = this.orderBy
       }
       if(this.licenseId) {
         const licenseId = this.licenseId
-        params.licenseId = licenseId === '其他' ? '' : licenseId
+        params.license = licenseId === '其他' ? '' : licenseId
       }
       SbomDataService.queryLicenseUniversalApi(params)
         .then((response: ResponseData) => {
@@ -124,6 +124,8 @@ export default defineComponent({
         });
     },
     openDiaog() {
+      this.pagination.pageNum = 1
+      this.pagination.pageSize = 10
       this.dialogVisible = true
       this.getDataList()
     }

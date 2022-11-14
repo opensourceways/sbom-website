@@ -85,6 +85,9 @@ class SbomDataService {
   queryVulImpact(productName: string, vulId: string): Promise<any> {
     return http.get(`/queryVulImpact/${productName}?vulId=${vulId}`);
   }
+  queryUpstreamAndPatchInfo(packageId: string): Promise<any> {
+    return http.get(`/queryUpstreamAndPatchInfo/${packageId}`);
+  }
 }
 
 export default new SbomDataService();
