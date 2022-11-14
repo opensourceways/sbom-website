@@ -22,6 +22,9 @@
         <el-tab-pane label="软件包依赖" name="package">
           <package-dependency />
         </el-tab-pane>
+        <el-tab-pane label="上游社区&Patch" name="upstreamAndPatch">
+          <upstream-and-patchInfo />
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -33,6 +36,7 @@ import sbomData from './components/sbomData.vue'
 import license from './components/license.vue'
 import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
 import packageDependency from './components/packageDependency.vue'
+import upstreamAndPatchInfo from './components/upstreamAndPatchInfo.vue'
 import SbomPackage from "@/types/SbomPackage";
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
@@ -44,7 +48,8 @@ export default defineComponent({
     sbomData,
     license,
     SbomVulnerabilityTable,
-    packageDependency
+    packageDependency,
+    upstreamAndPatchInfo
   },
   data() {
     return {

@@ -68,7 +68,7 @@ export function lineAreaStyle(index: number) {
 const options = {
   bar: {
     grid: {
-      left: '10%',
+      left: '15%',
       right: 50
     },
     color: '#5A94F8',
@@ -117,15 +117,19 @@ const options = {
     legend: {
       top: '20%',
       bottom: '40%',
-      right: '5%',
-      orient: 'vertical'
+      right: '1%',
+      orient: 'vertical',
+      textStyle: {
+        width: 100,
+        overflow: 'truncate'
+      }
     },
     color: pieColors,
     seriesItem: {
       name: '',
       type: 'pie',
       radius: ['35%', '65%'],
-      center: ['35%', '50%'],
+      center: ['33%', '50%'],
       avoidLabelOverlap: false,
       itemStyle: {
         borderRadius: 6,
@@ -136,6 +140,8 @@ const options = {
         show: true,
         position: 'outside',
         formatter: '{b}：{d}%',
+        width: 150,
+        overflow: 'break'
       },
       labelLine: {
         show: true,
