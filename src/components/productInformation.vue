@@ -18,7 +18,7 @@
           :key="item" 
           :label="item" 
           :value="item"
-          :disabled="getIsThirdPart"
+          :disabled="getIsThirdPart === '1'"
           :class="{active: productType === item}"
           @click="handleProductTypeChange(item)"
         >
