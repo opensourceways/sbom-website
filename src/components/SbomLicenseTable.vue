@@ -106,9 +106,8 @@ export default defineComponent({
       if(this.orderBy) {
         params.orderBy = this.orderBy
       }
-      if(this.licenseId) {
-        const licenseId = this.licenseId
-        params.license = licenseId === '其他' ? '' : licenseId
+      if(this.licenseId && this.licenseId !== '其他') {
+        params.license = this.licenseId
       }
       SbomDataService.queryLicenseUniversalApi(params)
         .then((response: ResponseData) => {

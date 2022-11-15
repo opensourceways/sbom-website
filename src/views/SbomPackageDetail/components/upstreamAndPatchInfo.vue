@@ -12,7 +12,7 @@
         </div>
         <div class="search">
           <el-input
-            placeholder="请输入namespace或name，按enter键搜索"
+            placeholder="请输入关键字，按enter键搜索"
             :suffix-icon="Search"
             v-model="search[part.prop]"
             @blur="getData"
@@ -89,15 +89,15 @@ export default defineComponent({
     return {
       Search: Search,
       config: [
-        { title: 'Upstream Info', prop: 'upstream' },
-        { title: 'Patch Info', prop: 'patch' },
+        { title: '上游社区', prop: 'upstream' },
+        { title: 'Patch', prop: 'patch' },
       ],
       columns: {
         upstream: [
-          { label: '上游社区原始地址', prop: 'url', link: true },
+          { label: 'URL', prop: 'url', link: true },
         ],
         patch: [
-          { label: 'patch文件原始地址', prop: 'url', link: true },
+          { label: 'URL', prop: 'url', link: true },
         ],
       },
       search: {
