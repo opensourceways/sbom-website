@@ -184,7 +184,18 @@ export default defineComponent({
       const option = {
         tooltip: {
           formatter: function(params) {
-            return `<div style="display:block;max-width: 250px;word-break: break-all;word-wrap: break-word;white-space:pre-wrap">${params.name}</div>`
+            let res = ''
+            if(params.dataType === 'edge') {
+              const sourceIndex = params.data.source
+              const targetIndex = params.data.target
+              const sourceName = nodes.find(node => node.id === sourceIndex)
+              const targetName = nodes.find(node => node.id === targetIndex)
+              res = `${sourceName ? sourceName.label : ''}<br/> > <br/>${targetName ? targetName.label : ''}`
+            } else {
+              res = params.name
+            }
+            return `<div style="display:block;max-width: 250px;word-break: break-all;word-wrap: break-word;white-space:pre-wrap">${res}</div>`
+            
           }
         },
         animationDurationUpdate: 1500,
