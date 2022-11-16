@@ -69,8 +69,8 @@ class SbomDataService {
   queryVulnerability(productName: string, str: string): Promise<any> {
     return http.get(`/queryVulnerability/${productName}?${str}`);
   }
-  queryPackageVulnerability(packageId: string, page: number, size: number): Promise<any> {
-    return http.get(`/queryPackageVulnerability/${packageId}?page=${page}&size=${size}`);
+  queryPackageVulnerability(packageId: string, str:string): Promise<any> {
+    return http.get(`/queryPackageVulnerability/${packageId}?${str}`);
   }
   queryPackageLicenseAndCopyright(packageId: string): Promise<any> {
     return http.get(`/queryPackageLicenseAndCopyright/${packageId}`);

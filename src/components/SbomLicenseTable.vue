@@ -6,6 +6,18 @@
     width="70%"
     custom-class="sbom-dialog"
   >
+  <div class="query-list">
+    <div class="query-item">
+      <span class="label">License 名称：</span> 
+      <el-input 
+        v-model="licenseId" 
+        placeholder="输入license名称搜索" 
+        :prefix-icon="Search"
+        @keyup.enter="search" 
+        @blur="search"
+      />
+    </div>
+  </div>
   <div class="sbom-table">
     <el-table
       :data="tableData" 
@@ -54,6 +66,7 @@ import { defineComponent, ref } from "vue";
 import SbomDataService from "@/services/SbomDataService";
 import { mapGetters} from 'vuex';
 import ResponseData from "@/types/ResponseData";
+import { Search } from '@element-plus/icons-vue'
 function defaultPagination() {
   return {
     pageNum: 1,
@@ -65,6 +78,7 @@ export default defineComponent({
   name: "SbomLicenseTable",
   data() {
     return {
+      Search: Search,
       dialogVisible: false,
       pagination: defaultPagination(),
       columns: [
@@ -83,6 +97,11 @@ export default defineComponent({
     ])
   },
   methods: {
+    search() {
+      this.pagination.pageNum = 1
+      this.pagination.pageSize = 10
+      this.getDataList()
+    },
     handlePageChange(val: number) {
       this.pagination.pageNum = val
       this.getDataList()
@@ -106,7 +125,7 @@ export default defineComponent({
       if(this.orderBy) {
         params.orderBy = this.orderBy
       }
-      if(this.licenseId && this.licenseId !== '其他') {
+      if(this.licenseId) {
         params.license = this.licenseId
       }
       SbomDataService.queryLicenseUniversalApi(params)
@@ -123,10 +142,8 @@ export default defineComponent({
         });
     },
     openDiaog() {
-      this.pagination.pageNum = 1
-      this.pagination.pageSize = 10
       this.dialogVisible = true
-      this.getDataList()
+      this.search()
     }
   },
 });

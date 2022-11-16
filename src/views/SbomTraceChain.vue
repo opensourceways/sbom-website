@@ -46,8 +46,22 @@
               <el-input class="input" v-model="conditionForm.endVersion" clearable /> 
             </template>
             <el-input class="input" v-else v-model="conditionForm.version" clearable />
+            <el-tooltip 
+              placement="top" 
+              effect="dark"
+              v-if="sectionDisabled"
+            >
+              <template #content> 
+                <span>
+                  Runtime Dependency举例场景：
+                </span><br/>
+                <span>B-Package运行时依赖于A-Package；</span><br/>
+                <span>则A-Package作为反向追溯链查询的输入条件，</span><br/>
+                <span>查询结果为B-Package的软件信息</span>
+              </template>
+              <el-icon :size="16"><QuestionFilled /></el-icon>
+            </el-tooltip>
           </el-form-item>
-          
         </el-form>
           <el-button type="primary" @click="search(conditionFormRef)">搜索</el-button>
       </div>
@@ -117,10 +131,12 @@ import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
 import { IsSelectArtifact } from "@/utils"
 import { mapGetters} from 'vuex';
+import { QuestionFilled } from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: "sbom-packages-list",
   components: {
+    QuestionFilled
   },
   setup() {
     const conditionFormRef = ref<FormInstance>();

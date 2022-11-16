@@ -371,7 +371,7 @@ export default defineComponent({
     },
     openLicenseDialog(orderBy, licenseId) {
       this.sbomLicenseRef.orderBy = orderBy
-      this.sbomLicenseRef.licenseId = licenseId
+      this.sbomLicenseRef.licenseId = licenseId === '其他' ? '' : licenseId
       this.sbomLicenseRef.openDiaog()
     },
     openVulnDialog(val) {
