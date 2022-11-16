@@ -18,7 +18,7 @@
             </el-select>
           </div>
           <div class="query-item">
-            漏洞：
+            漏洞级别：
             <el-select v-model="vulSeverity" clearable placeholder="请选择" @change="search">
               <el-option
                 v-for="(item, itemIndex) in vulSeverityList"
