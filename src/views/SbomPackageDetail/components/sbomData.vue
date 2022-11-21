@@ -17,9 +17,9 @@
         <div class="content">
           <div class="label">来源信息：</div><div class="name">{{ sbomData.sourceInfo }}</div>
         </div>
-        <div class="content">
+        <div class="content licenses">
           <div class="label">License：</div>
-          <template v-if="sbomData.licenseDeclared">
+          <div class="license-box" v-if="sbomData.licenseDeclared">
             <div 
               class="license" 
               v-for="(license,index) in sbomData.licenseDeclared.split('and')" 
@@ -28,7 +28,7 @@
               <span class="dot"></span>
               <span class="txt">{{ license }}</span>
             </div>
-          </template>
+          </div>
         </div>
         <div class="content">
           <div class="label">漏洞：</div>
@@ -163,10 +163,39 @@ export default defineComponent({
         display: flex;
         margin-top: 10px;
         align-items: center;
+        &.licenses{
+          align-items: baseline;
+          margin-top: 0;
+        }
+        .license-box{
+          display: flex;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          align-items: center;
+          .license{
+            height: 32px;
+            line-height: 30px;
+            padding: 0 10px;
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #000000;
+            margin-right: 10px;
+            margin-top: 10px;
+            .dot{
+              display: inline-block;
+              width: 8px;
+              height: 8px;
+              background-color: #626CD9;
+              border-radius: 50%;
+              margin-right: 5px;
+            }
+          }
+        }
         .label{
           color: #666666;
           margin-right: 10px;
-          min-width: 60px;
+          min-width: 75px;
         }
         .name{
           max-width: 100%;
@@ -178,24 +207,6 @@ export default defineComponent({
             &:hover{
               color:#4971FF
             }
-          }
-        }
-        .license{
-          height: 32px;
-          line-height: 30px;
-          padding: 0 10px;
-          border: 1px solid #E5E5E5;
-          border-radius: 8px;
-          font-size: 14px;
-          color: #000000;
-          margin-right: 10px;
-          .dot{
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #626CD9;
-            border-radius: 50%;
-            margin-right: 5px;
           }
         }
       }

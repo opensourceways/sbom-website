@@ -47,7 +47,11 @@
           :label="item.label + '：'" 
           :prop="item.name"
         >
-          <FormItem :formData="productForm" :data="item">
+          <FormItem 
+            :formData="productForm" 
+            :data="item"
+            @handleChange="(val, data) => { productFormChange(val, data, key) }"
+          >
           </FormItem>
         </el-form-item>
       </el-form>
@@ -166,37 +170,13 @@ export default defineComponent({
       this.productForm.data = {}
       SbomDataService.queryProductConfig(productType)
         .then((response: ResponseData) => {
-          this.productConfigList = response.data;
-
-          if (this.productConfigList) {
-            // 动态拼装表单对象&表单校验规则
-            let formDataMap: Record<string, any> = {};
-            let formRuleMap: Record<string, any> = {};
-
-            this.productConfigList.forEach(productConfig => {
-              if (productConfig.valueType == 'string') {
-                formDataMap[productConfig.name] = "";
-                formRuleMap[productConfig.name] = [
-                  { required: true, message: '请输入 ' + productConfig.name, trigger: 'blur' }
-                ];
-
-              } else if (productConfig.valueType == 'number') {
-                formDataMap[productConfig.name] = 0;
-                formRuleMap[productConfig.name] = [
-                  { required: true, message: '请输入 ' + productConfig.name },
-                  { type: 'number', message: productConfig.name + '必须是数字' },
-                ]
-              } else if (productConfig.valueType.startsWith('enum')) {
-                formDataMap[productConfig.name] = "";
-                formRuleMap[productConfig.name] = [
-                  { required: true, message: '请选择 ' + productConfig.name, trigger: 'change' }
-                ];
-
-              }
-            });
+          if(response.data) {
+            this.productConfigList = [response.data];
+            this.productForm.data[response.data.name] = ''
+            this.productForm.rules[response.data.name] = [
+                    { required: true, message: '请选择 ' + response.data.label, trigger: 'change' }
+                  ];
             this.$nextTick(() => {
-              this.productForm.data = reactive(formDataMap);
-              this.productForm.rules = reactive(formRuleMap);
               this.resetProductForm();
             });
           }
@@ -232,6 +212,32 @@ export default defineComponent({
         }
       }
       return val
+    },
+    productFormChange(val, data, index) {
+      this.formatFormData(data[val])
+      if(val) {
+        if(data[val]) {
+          this.productConfigList.splice(index + 1, 1, data[val])
+          this.productConfigList = this.productConfigList.slice(0, index + 2)
+        }
+      } else {
+        this.productConfigList = this.productConfigList.slice(0, index + 1)
+      }
+    },
+    formatFormData(data) {
+      if(data) {
+        this.productForm.data[data.name] = ''
+        this.productForm.rules[data.name] = [
+                  { required: true, message: '请选择 ' + data.label, trigger: 'change' }
+                ];
+        if(data.valueToNextConfig) {
+          const keys = Object.keys(data.valueToNextConfig)
+          if(keys.length) {
+            const val = data.valueToNextConfig[keys[0]]
+            this.formatFormData(val)
+          }
+        }
+      }
     },
     ...mapMutations(['setProductName'])
 
