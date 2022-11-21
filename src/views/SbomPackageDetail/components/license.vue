@@ -97,7 +97,7 @@ export default defineComponent({
 .sbomData-container{
   padding: 0 20px;
   .sbomData-part{
-    padding: 20px 0;
+    padding: 20px 0 10px 0;
     border-bottom: 2px dashed #D9E0ED;
     &:last-child{
       border-bottom: none;
@@ -120,6 +120,7 @@ export default defineComponent({
         display: flex;
         align-items: center;
         margin-top: 10px;
+        flex-wrap: wrap;
         .label{
           color: #666666;
           margin-right: 10px;
@@ -130,6 +131,7 @@ export default defineComponent({
         }
         .buttons{
           display: flex;
+          margin-bottom: 10px;
         }
       }
       &.inline{
