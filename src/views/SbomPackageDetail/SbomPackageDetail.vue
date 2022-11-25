@@ -41,6 +41,7 @@ import SbomPackage from "@/types/SbomPackage";
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
 import { ParseUriProductName } from '@/utils';
+import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   name: "sbom-package-detail",
@@ -65,8 +66,14 @@ export default defineComponent({
         .then((response: ResponseData) => {
           this.packageDetails = response.data;
         })
-        .catch((e: Error) => {
-          console.error('query package details failed:', { e });
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
+          this.packageDetails = {} as SbomPackage
         });
     },
     queryPackageVuls(packageId: string) {
@@ -74,8 +81,14 @@ export default defineComponent({
         .then((response: ResponseData) => {
           this.packageDetails.vulList = response.data;
         })
-        .catch((e: Error) => {
-          console.error('query package details failed:', { e });
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
+          this.packageDetails.vulList = []
         });
     },
   },

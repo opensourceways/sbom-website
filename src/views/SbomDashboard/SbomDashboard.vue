@@ -167,6 +167,7 @@ import { IsSelectArtifact, formatVulSeverity } from "@/utils"
 import SbomLicenseTable from '@/components/SbomLicenseTable.vue';
 import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
 import { QuestionFilled } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus';
 export default defineComponent({
   name: "sbom-dashboard",
   components: {
@@ -296,8 +297,14 @@ export default defineComponent({
           this.licenseData = this.formatData(this.licenseData, response.data, this.licenseProps)
           this.licenseDistributedData = response.data.licenseDistribution || {}
         })
-        .catch((e: Error) => {
-          console.error('query sbom packages pageable failed:', { e });
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
+          this.resetData()
         });
     },
     formatData(initData: any, newData: any, props: any) {
@@ -320,11 +327,16 @@ export default defineComponent({
       const endTimestamp = new Date().getTime();
       SbomDataService.queryProductVulTrend(this.getProductName, startTimestamp, endTimestamp)
         .then((response: ResponseData) => {
-          console.log(response.data)
           this.vulnerabilityTrendsData = response.data
         })
-        .catch((e: Error) => {
-          console.error('query sbom packages pageable failed:', { e });
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
+          this.vulnerabilityTrendsData = []
         });
     },
     initData() {

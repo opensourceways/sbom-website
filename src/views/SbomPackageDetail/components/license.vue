@@ -46,6 +46,7 @@
 import { defineComponent, ref } from "vue";
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
+import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   name: "license",
@@ -75,10 +76,15 @@ export default defineComponent({
           this.licenseContent = licenseContent;
           this.copyrightContent = copyrightContent;
         })
-        .catch((e: Error) => {
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
           this.licenseContent = []
           this.copyrightContent = []
-          console.error('query package details failed:', { e });
         });
     },
     goPath(item) {
