@@ -17,7 +17,7 @@
         <div class="content">
           <div class="label">来源信息：</div><div class="name">{{ sbomData.sourceInfo }}</div>
         </div>
-        <div class="content licenses">
+        <!-- <div class="content licenses">
           <div class="label">License：</div>
           <div class="license-box" v-if="sbomData.licenseDeclared">
             <div 
@@ -29,7 +29,7 @@
               <span class="txt">{{ license }}</span>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="content">
           <div class="label">漏洞：</div>
           <template v-for="(vul, vulIndex) in vluProps" :key="vulIndex">

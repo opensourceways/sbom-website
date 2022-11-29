@@ -67,6 +67,7 @@ import SbomDataService from "@/services/SbomDataService";
 import { mapGetters} from 'vuex';
 import ResponseData from "@/types/ResponseData";
 import { Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus';
 function defaultPagination() {
   return {
     pageNum: 1,
@@ -136,10 +137,17 @@ export default defineComponent({
           this.tableData = response.data.content;
           this.pagination.total = response.data.totalElements;
         })
-        .catch((e: Error) => {
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+            message: e.response.data,
+            type: 'error'
+            })
+          }
+          this.tableData = []
           this.pagination.total = 0
-          console.error('query package details failed:', { e });
         });
+        
     },
     openDiaog() {
       this.dialogVisible = true

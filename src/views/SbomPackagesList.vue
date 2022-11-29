@@ -150,6 +150,7 @@ import { IsSelectArtifact, NoAssertionFormat, IsOpenEulerByProductName } from "@
 import { mapGetters} from 'vuex';
 import SbomVulnerabilityTable from '@/components/SbomVulnerabilityTable.vue'
 import { vulSeverityList, formatVulSeverity } from "@/utils"
+import { ElMessage } from 'element-plus';
 
 const licenseList = [
   { label: '多license', prop: 'multiLicense' },
@@ -256,9 +257,15 @@ export default defineComponent({
           this.pageData = response.data.content;
           this.totalElements = response.data.totalElements;
         })
-        .catch((e: Error) => {
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
           this.totalElements = 0
-          console.error('query sbom packages pageable failed:', { e });
+          this.pageData = []
         });
     },
 

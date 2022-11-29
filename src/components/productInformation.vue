@@ -149,9 +149,11 @@ export default defineComponent({
               this.showQuery = false
             })
             .catch((e: any) => {
-              console.error('query artifact info failed:', { e });
-              if (e['response'] && e['response']['status'] == 500) {
-                ElMessage.error(e['response']['data'])
+              if (e.response && e.response.status == 500) {
+                ElMessage({
+                  message: e.response.data,
+                  type: 'error'
+                })
               }
             });
 

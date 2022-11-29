@@ -257,9 +257,15 @@ export default defineComponent({
               this.pageData = response.data.content;
               this.totalElements = response.data.totalElements;
             })
-            .catch((e: Error) => {
+            .catch((e: any) => {
+              if (e.response && e.response.status == 500) {
+                ElMessage({
+                  message: e.response.data,
+                  type: 'error'
+                })
+              }
               this.totalElements = 0
-              console.error('query sbom packages by binary failed:', { e });
+              this.pageData = []
             });
         }
       })

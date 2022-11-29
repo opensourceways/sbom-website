@@ -101,9 +101,14 @@ export default defineComponent({
                     fileLink.click();
                     this.popoverRef.hide();
                 })
-                .catch((e: Error) => {
+                .catch((e: any) => {
+                    if (e.response && e.response.status == 500) {
+                        ElMessage({
+                        message: e.response.data,
+                        type: 'error'
+                        })
+                    }
                     HideLoading();
-                    console.error('download sbom failed:', { e });
                 });
         },
     },

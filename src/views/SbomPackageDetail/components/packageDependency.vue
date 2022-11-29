@@ -72,6 +72,7 @@ import { defineComponent, ref } from "vue";
 import { Search } from '@element-plus/icons-vue'
 import ResponseData from "@/types/ResponseData";
 import SbomDataService from "@/services/SbomDataService";
+import { ElMessage } from 'element-plus';
 function defaultPagination() {
   return {
     pageNum: 1,
@@ -134,8 +135,19 @@ export default defineComponent({
           this.dataList = response.data
           this.getData()
         })
-        .catch((e: Error) => {
-          console.error('query package binary failed:', { e });
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
+          this.dataList = {
+            packageList: [] as Map<string, any>[],
+            provideList: [] as Map<string, any>[], 
+            externalList: [] as Map<string, any>[],
+            relationshipList: [] as Map<string, any>[],
+          }
         });
     },
     getData() {

@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="sbomData-part">
+    <!-- <div class="sbomData-part">
       <div class="part-title">
         <img src="@/assets/images/titleIcon2.png" alt="">
         Copyrights
@@ -38,7 +38,7 @@
           <div class="label">Additional Info:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].additionalInfo : '' }}</div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -46,6 +46,7 @@
 import { defineComponent, ref } from "vue";
 import SbomDataService from "@/services/SbomDataService";
 import ResponseData from "@/types/ResponseData";
+import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   name: "license",
@@ -75,10 +76,15 @@ export default defineComponent({
           this.licenseContent = licenseContent;
           this.copyrightContent = copyrightContent;
         })
-        .catch((e: Error) => {
+        .catch((e: any) => {
+          if (e.response && e.response.status == 500) {
+            ElMessage({
+              message: e.response.data,
+              type: 'error'
+            })
+          }
           this.licenseContent = []
           this.copyrightContent = []
-          console.error('query package details failed:', { e });
         });
     },
     goPath(item) {
