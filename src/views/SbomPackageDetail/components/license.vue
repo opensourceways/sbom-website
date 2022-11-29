@@ -22,23 +22,6 @@
         </div>
       </div>
     </div>
-    <div class="sbomData-part">
-      <div class="part-title">
-        <img src="@/assets/images/titleIcon2.png" alt="">
-        Copyrights
-      </div>
-      <div class="content-box inline">
-        <div class="content">
-          <div class="label">organization:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].organization : '' }}</div>
-        </div>
-        <div class="content">
-          <div class="label">Start  Year:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].startYear : '' }}</div>
-        </div>
-        <div class="content">
-          <div class="label">Additional Info:</div><div class="name">{{ copyrightContent.length ? copyrightContent[0].additionalInfo : '' }}</div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
