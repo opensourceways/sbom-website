@@ -124,6 +124,8 @@ export default defineComponent({
 #app{
   background-color: #F0F3F6;
   min-height: 100vh;
+  min-width: 1400px;
+  overflow: auto;
   .header{
     height: 73px;
     background-color: #191A35;

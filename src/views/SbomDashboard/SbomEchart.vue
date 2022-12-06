@@ -57,6 +57,9 @@ export default defineComponent({
     }
   },
   methods: {
+    handleResize() {
+      this.chart && this.chart.resize()
+    },
     createDom (id) {
       const div = document.createElement('div')
       div.id = id
@@ -279,10 +282,12 @@ export default defineComponent({
   mounted () {
     this.chart && this.chart.dispose()
     this.chart = markRaw(init(document.querySelector(`#echart${this.chartId}`)))
-    this.chart && this.initEchart()
+    this.chart && this.initEchart() 
+    window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount () {
     this.chart = null
+    window.removeEventListener('resize', this.handleResize)
   }
 });
 </script>
