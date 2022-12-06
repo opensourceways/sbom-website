@@ -25,9 +25,9 @@ const InputNumber = (form: Record<string, any>, data: Record<string, any>, conte
 
 )
 
-const setLabelValue = (_item: any,) => {
+const setLabelValue = (data: any, _item: any,) => {
     return {
-        label: _item,
+        label: data.valueLabel || _item,
         value: _item,
     }
 }
@@ -40,7 +40,7 @@ const Select = (form: Record<string, any>, name: string, data: any, context: any
         >
 
         {Object.keys(data).map((item: any) => {
-            return <ElOption {...setLabelValue(item)} />
+            return <ElOption {...setLabelValue(data[item], item)} />
         })}
 
     </ElSelect>
