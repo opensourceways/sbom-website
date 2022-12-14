@@ -32,13 +32,12 @@
             是否精准查询：
             <el-switch v-model="isExactly" @change="retrievePackages" inline-prompt active-text="是" inactive-text="否" />
           </div>
-          <div class="query-item">
+          <div class="query-item" style="width: 260px">
             <el-input 
               v-model="packageName" 
-              placeholder="输入package名称搜索" 
+              placeholder="输入package名称，按enter键搜索" 
               :prefix-icon="Search"
-              @keyup.enter="search" 
-              @blur="search"
+              @keyup.enter="search"
             />
           </div>
         </div>
@@ -49,6 +48,7 @@
           :data="pageData"  
           border
           highlight-current-row 
+          max-height="100%"
         >
           <template #empty>
             <div class="no-data">
