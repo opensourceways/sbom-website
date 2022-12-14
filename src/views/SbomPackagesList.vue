@@ -290,6 +290,11 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less">
-
+<style lang="less" scoped>
+.sbom-table{
+  /deep/.el-scrollbar__bar.is-vertical{
+    display: none !important;
+  }
+}
+  
 </style>
