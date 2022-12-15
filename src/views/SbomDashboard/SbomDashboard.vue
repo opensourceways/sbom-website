@@ -508,12 +508,20 @@ export default defineComponent({
       justify-content: space-between;
       .modules{
         margin-top: 42px;
-        margin-left: 38px;
+        // margin-left: 38px;
+        width: 40%;
+        padding: 0 40px;
         .module{
-          width: 280px;
+          width: 100%;
           border: 1px solid #C2C5E0;
           margin-bottom: 24px;
           cursor: pointer;
+          .img{
+            width: auto;
+            height: auto;
+            line-height: inherit;
+            padding: 10px;
+          }
           .img.class0{
             background-color: #C2C5E0;
           }
@@ -521,18 +529,23 @@ export default defineComponent({
             background-color: #4971FF;
           }
           .numberTxt{
+            width: calc(100% - 80px);
             .number{
               color: #191A35;
             }
             .txt{
               color: #9DA1A6;
               opacity: 1;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
             }
           }
         }
       }
       .chart{
-        width: calc(100% - 360px);
+        // width: calc(68% - 80px);
+        width: 60%;
       }
     }
   }

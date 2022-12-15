@@ -1,60 +1,64 @@
 <template>
-  <div id="app" :class="{ thirdPart }">
-    <div v-if="thirdPart" class="thirdPartHeader">
-      <div class="navList" v-show="$route.name != 'package-details'">
-        <div 
-          v-for="(nav,navIndex) in navList"
-          :key="navIndex"
-          class="navItem" 
-          :class="{active: activeName === nav.value}"
-          @click="goPath(nav)"
-        >
-          <div class="link" :to="nav.path">{{ nav.label }}</div>
-          <div class="Bottomborder"></div>
+  <el-config-provider :locale="locale">
+    <div id="app" :class="{ thirdPart }">
+      <div v-if="thirdPart" class="thirdPartHeader">
+        <div class="navList" v-show="$route.name != 'package-details'">
+          <div 
+            v-for="(nav,navIndex) in navList"
+            :key="navIndex"
+            class="navItem" 
+            :class="{active: activeName === nav.value}"
+            @click="goPath(nav)"
+          >
+            <div class="link" :to="nav.path">{{ nav.label }}</div>
+            <div class="Bottomborder"></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="header" v-if="isShow && !thirdPart">
-      <router-link to="/">
-        <img src="@/assets/images/logo.png" alt="">
-      </router-link>
-      <div class="navList" v-show="$route.name != 'package-details'">
-        <div 
-          v-for="(nav,navIndex) in navList"
-          :key="navIndex"
-          class="navItem" 
-          :class="{active: activeName === nav.value}"
-          @click="goPath(nav)"
-        >
-          <div class="link" :to="nav.path">{{ nav.label }}</div>
-          <div class="Bottomborder"></div>
+      <div class="header" v-if="isShow && !thirdPart">
+        <router-link to="/">
+          <img src="@/assets/images/logo.png" alt="">
+        </router-link>
+        <div class="navList" v-show="$route.name != 'package-details'">
+          <div 
+            v-for="(nav,navIndex) in navList"
+            :key="navIndex"
+            class="navItem" 
+            :class="{active: activeName === nav.value}"
+            @click="goPath(nav)"
+          >
+            <div class="link" :to="nav.path">{{ nav.label }}</div>
+            <div class="Bottomborder"></div>
+          </div>
+        </div>
+        <div class="login">
+        <!-- <el-button class="loginBtn">登录</el-button> -->
         </div>
       </div>
-      <div class="login">
-       <!-- <el-button class="loginBtn">登录</el-button> -->
+      <template v-if="isShow">
+        <ProductInformation />
+      </template>
+      <div>
+        <!-- <div class="container mt-3"> -->
+        <router-view />
       </div>
     </div>
-    <template v-if="isShow">
-      <ProductInformation />
-    </template>
-    <div>
-      <!-- <div class="container mt-3"> -->
-      <router-view />
-    </div>
-  </div>
+  </el-config-provider>
 </template>
 
 <script lang="ts">
+import { ElConfigProvider } from 'element-plus';
 import { Download, Search, Expand } from '@element-plus/icons-vue'
 import { defineComponent } from "vue";
 import { useRouter } from 'vue-router';
 import ProductInformation from '@/components/productInformation.vue';
 import { mapMutations, mapGetters} from 'vuex';
-
+import zhCn from "element-plus/lib/locale/lang/zh-cn";
 export default defineComponent({
   name: "App",
   components: {
-    ProductInformation
+    ProductInformation,
+    ElConfigProvider
   },
   data() {
     return {
@@ -69,7 +73,8 @@ export default defineComponent({
       ],
       activeName: this.$route.name || '',
       isShow: false,
-      thirdPart: false
+      thirdPart: false,
+      locale: zhCn
     }
   },
   computed:{
@@ -124,6 +129,8 @@ export default defineComponent({
 #app{
   background-color: #F0F3F6;
   min-height: 100vh;
+  min-width: 1400px;
+  overflow: auto;
   .header{
     height: 73px;
     background-color: #191A35;

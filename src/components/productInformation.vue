@@ -111,12 +111,6 @@ export default defineComponent({
         rules: {},
       }),
       showQuery: true,
-      communitys: {
-        'openeuler': 'openEuler',
-        'mindspore': 'MindSpore',
-        'opengauss': 'openGauss',
-      }
-
     }
   },
   computed:{
@@ -131,6 +125,19 @@ export default defineComponent({
       SbomDataService.queryProductType()
         .then((response: ResponseData) => {
           this.productTypeList = response.data;
+          const community = this.getParams('community')
+          if(community) {
+            let productType = ''
+            response.data.map(item => {
+              if(community.toLowerCase().includes(item.toLowerCase())) {
+                productType = item
+              }
+            })
+            if(productType) {
+              this.showQuery = true
+              this.handleProductTypeChange(productType)
+            }
+          }
         })
         .catch((e: Error) => {
           console.error('query product type list failed:', { e });
@@ -218,7 +225,7 @@ export default defineComponent({
     productFormChange(val, data, index) {
       this.formatFormData(data[val])
       if(val) {
-        if(data[val]) {
+        if(data[val] && data[val].name) {
           this.productConfigList.splice(index + 1, 1, data[val])
           this.productConfigList = this.productConfigList.slice(0, index + 2)
         }
@@ -227,7 +234,7 @@ export default defineComponent({
       }
     },
     formatFormData(data) {
-      if(data) {
+      if(data && data.name) {
         this.productForm.data[data.name] = ''
         this.productForm.rules[data.name] = [
                   { required: true, message: '请选择 ' + data.label, trigger: 'change' }
@@ -257,13 +264,6 @@ export default defineComponent({
     if(this.productName) {
       this.setProductName(this.productName);
       this.showQuery = false
-    }
-    if(this.getParams('community')) {
-      const productType = this.communitys[this.getParams('community')]
-      if(productType) {
-        this.showQuery = true
-        this.handleProductTypeChange(productType)
-      }
     }
   },
 });
