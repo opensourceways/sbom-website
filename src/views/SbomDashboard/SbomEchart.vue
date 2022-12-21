@@ -178,7 +178,7 @@ export default defineComponent({
     chartClick () {
       this.chart.on('click', params => {
         if(params.name) {
-          this.$emit('echartsClick', params.name)
+          this.$emit('echartsClick', params.name, params)
         }
       })
     },
@@ -215,6 +215,10 @@ export default defineComponent({
                 id: node.id,
                 name: node.label,
                 symbolSize: node.size,
+                value: { 
+                  nodeType: node.nodeType,
+                  elementId: node.elementId 
+                },
                 itemStyle: {
                   color: node.color
                 },
