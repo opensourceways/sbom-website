@@ -89,10 +89,10 @@
           </el-table-column>
           <el-table-column property="licenseConcluded" label="License" min-width="200" :formatter="NoAssertionFormat">
             <template #default="scope">
-              <template v-if="scope.row.licenseConcluded">
+              <template v-if="scope.row.licenses && scope.row.licenses.length">
                 <div 
                   class="licenseItem" 
-                  v-for="(license,index) in scope.row.licenseConcluded.split('and')" 
+                  v-for="(license,index) in scope.row.licenses" 
                   :key="index"
                 >
                   <span class="dot"></span>
