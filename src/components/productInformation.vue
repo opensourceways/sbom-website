@@ -12,18 +12,19 @@
     <div class="orgnization" v-if="showQuery">
       <div class="label">开源社区：</div>
       <div class="orgnization-btns">
-        <el-button 
-          class="orgnization-btn" 
-          v-for="item in productTypeList" 
-          :key="item" 
-          :label="item" 
-          :value="item"
-          :disabled="getIsThirdPart === '1'"
-          :class="{active: productType === item}"
-          @click="handleProductTypeChange(item)"
-        >
-          {{ item }}
-        </el-button>
+        <template v-for="item in productTypeList" >
+          <el-button 
+            class="orgnization-btn" 
+            v-if="getIsThirdPart !== '1' || productType === item"
+            :key="item" 
+            :label="item" 
+            :value="item"
+            :class="{active: productType === item}"
+            @click="handleProductTypeChange(item)"
+          >
+            {{ item }}
+          </el-button>
+        </template>
       </div>
       <div class="search">
         <!-- 筛选
