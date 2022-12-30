@@ -90,13 +90,15 @@
           <el-table-column property="licenseConcluded" label="License" min-width="200" :formatter="NoAssertionFormat">
             <template #default="scope">
               <template v-if="scope.row.licenses && scope.row.licenses.length">
-                <div 
-                  class="licenseItem" 
-                  v-for="(license,index) in scope.row.licenses" 
-                  :key="index"
-                >
-                  <span class="dot"></span>
-                  <span class="txt">{{ license }}</span>
+                <div class="cellBox">
+                  <div 
+                    class="licenseItem" 
+                    v-for="(license,index) in scope.row.licenses" 
+                    :key="index"
+                  >
+                    <span class="dot"></span>
+                    <span class="txt">{{ license }}</span>
+                  </div>
                 </div>
               </template>
               <span v-else>--</span>
