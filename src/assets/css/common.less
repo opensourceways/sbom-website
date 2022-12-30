@@ -202,6 +202,13 @@
           background-color: #B5E1FF;
         }
       }
+      .cellBox{
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+      }
     }
     .el-table__header{
       // border: 1px solid #E2E3E8;
@@ -292,6 +299,20 @@
     border-radius: 10px; /*滚动条的圆角*/
     -webkit-box-shadow: inset 0 0 6px rgba(145, 143, 0143, 0.3);
     background-color: rgb(145, 143, 143); /*滚动条的背景颜色*/
+  }
+  .cellBox::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+ .cellBox::-webkit-scrollbar-track {
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 0 3px rgba(243, 237, 237, 0.3);
+    background-color: #eeeeee;
+  }
+  .cellBox::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 0 3px rgba(233, 230, 230, 0.3);
+    background-color: rgb(207, 205, 205);
   }
   
 }
