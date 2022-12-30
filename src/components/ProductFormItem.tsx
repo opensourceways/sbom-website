@@ -36,7 +36,7 @@ const Select = (form: Record<string, any>, name: string, data: any, context: any
         v-model={form.data[name]}
         filterable
         clearable
-        onChange={(val) => { context.emit('handleChange', val, data) }}
+        onChange={(val) => { context.emit('handleChange', val, data, name) }}
         >
 
         {Object.keys(data).map((item: any) => {

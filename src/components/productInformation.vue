@@ -51,7 +51,7 @@
           <FormItem 
             :formData="productForm" 
             :data="item"
-            @handleChange="(val, data) => { productFormChange(val, data, key) }"
+            @handleChange="(val, data, name) => { productFormChange(val, data, name, key) }"
           >
           </FormItem>
         </el-form-item>
@@ -223,7 +223,11 @@ export default defineComponent({
       }
       return val
     },
-    productFormChange(val, data, index) {
+    productFormChange(val, data, name, index) {
+      if(index === 0) {
+        this.productForm.data = {}
+        this.productForm.data[name] = val
+      }
       this.formatFormData(data[val])
       if(val) {
         if(data[val] && data[val].name) {
